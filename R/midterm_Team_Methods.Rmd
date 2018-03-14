@@ -1,0 +1,88 @@
+#### 3. 팀 나누기
+
+##### 3.1 
+
+아래 코드묶음으로부터 `names(class_roll)[4]`의 결과는 어떻게 나오겠는가?
+
+```{r, data, echo = TRUE, results = 'hide'}
+class_roll <- read.xlsx("../data/class_roll.xlsx", 1, startRow = 2, endRow = 23, colIndex = c(3:7, 9), colClasses = rep("character", 6), stringsAsFactors = FALSE)
+str(class_roll)
+names(class_roll) <- c("dept", "id", "name", "year", "e.mail", "cell.no")
+str(class_roll)
+names(class_roll)[4]
+kable(class_roll)
+```
+
+가. `## [1] "dept"`
+
+나. `## [1] "id"`
+
+다. `## [1] "name"`
+
+라. `## [1] "year"`
+
+##### 3.2
+
+위의 코드 묶음에서 `kable(class_roll)`의 결과가 제대로 나오려면 어떤 코드가 먼저 나왔어야 하는가?
+
+가. `install.packages("knitr")`
+
+나. `library(knitr)`
+
+다. `update.packages("knitr")`
+
+라. `remove.packages("knitr")`
+
+##### 3.3
+
+다음 코드에서 각 일련변호를 랜덤하게 늘어놓은 후 5로 나눈 나머지를 구하는 코드는 무엇인가?
+
+```{r, team id, echo = TRUE, results = 'hide'}
+set.seed(3)
+N <- nrow(class_roll)
+group <- 1 + sample(1:N) %% 5
+class_roll$group <- factor(group, levels = 1:5, labels = paste("Team", 1:5))
+```
+
+가. `set.seed(3)`
+
+나. `N <- nrow(class_roll)`
+
+다. `sample(1:N) %% 5`
+
+라. `group <- 1 + sample(1:N) %% 5`
+
+##### 3.4 
+
+다음 코드묶음에서 학번 첫 네자리를 추출하는 코드는 무엇인가? 
+
+```{r, id, echo = TRUE, results = 'hide'}
+ID.14 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2014, "younger.14", "older.14"), levels=c("younger.14", "older.14"), labels = c("14학번 이후", "13학번 이전"))
+```
+
+가. `class_roll$id`
+
+나. `substr(class_roll$id, 1, 4)`
+
+다. `ifelse(substr(class_roll$id, 1, 4) >= 2014, "younger.14", "older.14")`
+
+라. `factor(ifelse(substr(class_roll$id, 1, 4) >= 2014, "younger.14", "older.14"))`
+
+##### 3.5
+
+다음 코드묶음에서 e-mail 주소의 사용자이름과  서비스 업체 도메인 명의 리스트에서 도메인명들만을 추출하는 코드는 무엇인가?
+
+```{r, e_mail, echo = TRUE, results = 'hide'}
+e.mail.list <- strsplit(class_roll$e.mail, "@", fixed = TRUE)
+mail.com <- mapply("[", e.mail.list, 2)
+```
+
+가. `class_roll$e.mail`
+
+나. `strsplit(class_roll$e.mail, "@", fixed = TRUE)` 
+
+다. `mapply("[", e.mail.list, 2)` 
+
+라. `mail.com <- mapply("[", e.mail.list, 2)`
+
+<P style = "page-break-before:always">
