@@ -37,7 +37,7 @@ names(class_roll) <- c("dept", "id", "name", "year", "email", "cell_no")
 
 `sapply()`, `apply()` 는 `R`의 강점으로 데이터를 일정 조건에 따라 쪼개고 동일한 기능을 적용시킨 후 도로 합치는 역할을 함.
 
-```{r, name}
+```{r, name, eval = TRUE}
 #> 흔히 갖는 세글자 이름이 아닌 사람 검색. `which()`는 인덱스를 찾는 기능을 가짐.
 #> 복성의 경우는 사전을 만들어 별도로 취급하여야 하므로 이름의 첫 글자만 성으로 취급.
 not3_ind <- which(nchar(class_roll$name) != 3)
@@ -103,6 +103,17 @@ class_roll$email <- apply(email_split,
                           paste, collapse = "@")
 kable(head(class_roll))
 ```
+
+### 학번 가리기
+
+학번은 입학연도를 나타내는 첫 네자리와 개인 식별번호로 구성되어 있다. 여기서,  
+개인식별번호를 "9999"로 가려보자. `substr() <-` 을 이용하면 학번의 개인정보를 가리는 일은 한 줄의 코드로 가능하다. 
+
+```{r}
+substr(class_roll$id, start = 5, stop = 8) <- "9999"
+kable(head(class_roll))
+```
+
 
 <!--
 ```{r, save}
