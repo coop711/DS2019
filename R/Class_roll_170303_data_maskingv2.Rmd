@@ -57,19 +57,12 @@ kable(head(class_roll))
 
 ### e-mail
 
-email 주소는 `@`를 사이에 두고 나뉘어지므로 앞의 방법을 그대로 적용할 수 없다. email 주소에서 서비스업체만 그대로 두고 개인 식별이 가능한 이름 부분은 `user_name`으로 대체
+email 주소는 `@`를 사이에 두고 나뉘어지므로 앞의 방법을 그대로 적용할 수 없다. 
+`gsub()` 함수와 정규표현(regular expression)을 활용하면 email 주소에서 서비스업체명은 그대로 두고 개인 식별이 가능한 이름 부분을 `user_name`으로 대체할 수 있다.
 
 ```{r, e_mail}
-email_na <- which(is.na(class_roll$email))
-class_roll$email[email_na] <- "NA@NA"
-email_split <- sapply(class_roll$email, 
-                      function(x) unlist(strsplit(x, split = "@")))
-# email_split
-email_split[1, ] <- "user_name"
-class_roll$email <- apply(email_split, 
-                          MARGIN = 2, 
-                          paste, collapse = "@")
-kable(head(class_roll))
+class_roll$email <- gsub("^.+@", "user_name@", class_roll$email)
+kable(class_roll)
 ```
 
 
