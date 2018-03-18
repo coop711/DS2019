@@ -104,7 +104,7 @@ kable(table("그룹" = class_roll$group, "학과" = class_roll$dept))
 ```
 -->
 
-### 출석부에서 29명 비복원 랜덤 표집
+### 출석부에서 20명 비복원 랜덤 표집
 
 ```{r, colleges}
 kable(class_roll[sample(1:nrow(class_roll), size = 20), ])
