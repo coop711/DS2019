@@ -107,7 +107,31 @@ kable(table("그룹" = class_roll$group, "학과" = class_roll$dept))
 ### 출석부에서 20명 비복원 랜덤 표집
 
 ```{r, colleges}
+# set.seed(1)
 kable(class_roll[sample(1:nrow(class_roll), size = 20), ])
+```
+
+<P style = "page-break-before:always">
+
+### `set.seed()` 의 용법
+
+`set.seed()`를 이용하면 랜덤넘버에 의존하는 실험을 재현할 수 있다. 
+다음 코드를 수행하면 그 의미를 명확히 알 수 있을 것이다.
+
+```{r}
+sample(1:6, size = 2)
+sample(1:6, size = 2)
+sample(1:6, size = 2)
+set.seed(1)
+sample(1:6, size = 2)
+sample(1:6, size = 2)
+sample(1:6, size = 2)
+set.seed(1)
+sample(1:6, size = 2)
+set.seed(1)
+sample(1:6, size = 2)
+set.seed(1)
+sample(1:6, size = 2)
 ```
 
 <!--
