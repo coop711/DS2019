@@ -67,7 +67,7 @@ kable(table("odd_even" = odd.even, "Group"= class_roll$group))
 ```
 -->
 
-### e-mail 서비스업체
+### email 서비스업체
 
 ```{r, e_mail}
 email_list <- strsplit(class_roll$email, "@", fixed = TRUE)
@@ -116,16 +116,28 @@ kable(class_roll[sample(1:nrow(class_roll), size = 20), ])
 ### `set.seed()` 의 용법
 
 `set.seed()`를 이용하면 랜덤넘버에 의존하는 실험을 재현할 수 있다. 
-다음 코드를 수행하면 그 의미를 명확히 알 수 있을 것이다.
+다음 코드를 반복 수행하거나 다른 사람들의 수행결과와 비교해 보라.
+
+세 결과가 모두 다른 경우
 
 ```{r}
 sample(1:6, size = 2)
 sample(1:6, size = 2)
 sample(1:6, size = 2)
+```
+
+ 세 번의 수행 결과가 똑같이 반복되는 경우
+
+```{r}
 set.seed(1)
 sample(1:6, size = 2)
 sample(1:6, size = 2)
 sample(1:6, size = 2)
+```
+
+동일한 결과를 반복적으로 얻는 경우
+
+```{r}
 set.seed(1)
 sample(1:6, size = 2)
 set.seed(1)
