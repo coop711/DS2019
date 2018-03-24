@@ -1,47 +1,47 @@
-party <- c("´õºÒ¾î¹ÎÁÖ´ç", "ÀÚÀ¯ÇÑ±¹´ç", "±¹¹ÎÀÇ´ç", "¹Ù¸¥Á¤´ç", "Á¤ÀÇ´ç", "±âÅ¸Á¤´ç", "¾øÀ½/¸ğ¸§/¹«ÀÀ´ä")
+party <- c("ë”ë¶ˆì–´ë¯¼ì£¼ë‹¹", "ììœ í•œêµ­ë‹¹", "êµ­ë¯¼ì˜ë‹¹", "ë°”ë¥¸ì •ë‹¹", "ì •ì˜ë‹¹", "ê¸°íƒ€ì •ë‹¹", "ì—†ìŒ/ëª¨ë¦„/ë¬´ì‘ë‹µ")
 counts <- c(396, 109, 97, 51, 51, 29, 267)
 prop.in <- c(20.0, 0.0, 2.7, 5.7, 29.5, 11.4, 2.3)
 counts.in <- round(counts * prop.in / 100)
 counts.not <- counts - counts.in
-counts.df <- data.frame(ÁöÁöÁ¤´ç = party, »ç·Ê¼ö = counts, Âü¿© = counts.in, ¹ÌÂü¿© = counts.not)
+counts.df <- data.frame(ì§€ì§€ì •ë‹¹ = party, ì‚¬ë¡€ìˆ˜ = counts, ì°¸ì—¬ = counts.in, ë¯¸ì°¸ì—¬ = counts.not)
 counts.df
-# par(family = "HCR Dotum LVT")
-barplot(t(as.matrix(counts.df[, 3:4])), axes = FALSE, beside = FALSE, names.arg = counts.df[, 1], legend.text = c("Âü¿©", "¹ÌÂü¿©"), col = c("cyan", "red"))
+par(family = "HCR Dotum LVT")
+barplot(t(as.matrix(counts.df[, 3:4])), axes = FALSE, beside = FALSE, names.arg = counts.df[, 1], legend.text = c("ì°¸ì—¬", "ë¯¸ì°¸ì—¬"), col = c("cyan", "red"))
 axis(side = 2, at = counts, labels = counts)
-main.title <- "ÁöÁöÁ¤´ç º° ¹ÎÁÖ´ç °æ¼± Âü¿© ºñ±³"
-sub.title <- "JTBC ´º½º·ë, ÇÑ±¹¸®¼­Ä¡ 2017. 3. 14"
-main.text <- "´õºÒ¾î¹ÎÁÖ´ç ÁöÁöÀÚ Áß 20%,\n Á¤ÀÇ´ç ÁöÁöÀÚ Áß 29.5%,\n ´õºÒ¾î¹ÎÁÖ´ç °æ¼± Âü¿©"
+main.title <- "ì§€ì§€ì •ë‹¹ ë³„ ë¯¼ì£¼ë‹¹ ê²½ì„  ì°¸ì—¬ ë¹„êµ"
+sub.title <- "JTBC ë‰´ìŠ¤ë£¸, í•œêµ­ë¦¬ì„œì¹˜ 2017. 3. 14"
+main.text <- "ë”ë¶ˆì–´ë¯¼ì£¼ë‹¹ ì§€ì§€ì ì¤‘ 20%,\n ì •ì˜ë‹¹ ì§€ì§€ì ì¤‘ 29.5%,\n ë”ë¶ˆì–´ë¯¼ì£¼ë‹¹ ê²½ì„  ì°¸ì—¬"
 title(main = main.title, sub = sub.title, cex.main = 2)
 text(4, 250, main.text)
 library(reshape2)
 counts.df$party.f <- factor(party, levels = party)
 counts.df
 str(counts.df)
-counts.df.melt <- melt(counts.df, id.vars = "party.f", measure.vars = c("»ç·Ê¼ö", "¹ÌÂü¿©", "Âü¿©"), variable.name = "Participation", value.name = "Counts")
-counts.df.melt2 <- counts.df.melt[counts.df.melt$Participation != "»ç·Ê¼ö", ]
+counts.df.melt <- melt(counts.df, id.vars = "party.f", measure.vars = c("ì‚¬ë¡€ìˆ˜", "ë¯¸ì°¸ì—¬", "ì°¸ì—¬"), variable.name = "Participation", value.name = "Counts")
+counts.df.melt2 <- counts.df.melt[counts.df.melt$Participation != "ì‚¬ë¡€ìˆ˜", ]
 library(ggplot2)
 # ggplot(data = counts.df.melt2, mapping = aes(x = party.f, y = Counts, fill = Participation)) +
 #   geom_bar(stat = "identity") + 
-#   theme_bw(base_family = "") +
-#     scale_fill_manual(name = "°æ¼±Âü¿©", values = c("red", "cyan")) +
-#     scale_x_discrete(name = "ÁöÁöÁ¤´ç") +
-#     scale_y_continuous(name = "»ç·Ê¼ö", breaks = counts, labels = counts) +
+#   theme_bw(base_family = "HCR Dotum LVT") +
+#     scale_fill_manual(name = "ê²½ì„ ì°¸ì—¬", values = c("red", "cyan")) +
+#     scale_x_discrete(name = "ì§€ì§€ì •ë‹¹") +
+#     scale_y_continuous(name = "ì‚¬ë¡€ìˆ˜", breaks = counts, labels = counts) +
 #     labs(title = main.title, subtitle = sub.title) +
 g1 <- ggplot(data = counts.df.melt2, mapping = aes(x = party.f, y = Counts, fill = Participation)) 
 g2 <- g1 + 
   geom_bar(stat = "identity") 
 g2
 g3 <- g2 +
-  theme_bw(base_family = "")
+  theme_bw(base_family = "HCR Dotum LVT")
 g3
 g4 <- g3 + 
-    scale_fill_manual(name = "°æ¼±Âü¿©", values = c("red", "cyan"))
+    scale_fill_manual(name = "ê²½ì„ ì°¸ì—¬", values = c("red", "cyan"))
 g4
 g5 <- g4 + 
-    scale_x_discrete(name = "ÁöÁöÁ¤´ç")
+    scale_x_discrete(name = "ì§€ì§€ì •ë‹¹")
 g5
 g6 <- g5 +
-    scale_y_continuous(name = "»ç·Ê¼ö", breaks = counts, labels = counts)
+    scale_y_continuous(name = "ì‚¬ë¡€ìˆ˜", breaks = counts, labels = counts)
 g6
 g7 <- g6 +
     labs(title = main.title, subtitle = sub.title)
