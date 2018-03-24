@@ -5,70 +5,100 @@ output: html_document
 
 ## Problem
 
-JTBC ´º½º·ë¿¡¼­´Â ´ÙÀ½°ú °°Àº µµÇ¥ÀÇ ÈÄº¸ÁöÁöµµ ¿©·ĞÁ¶»ç °á°ú¸¦ º¸µµ. 
+JTBC ë‰´ìŠ¤ë£¸ì—ì„œëŠ” ë‹¤ìŒê³¼ ê°™ì€ ë„í‘œì˜ í›„ë³´ì§€ì§€ë„ ì—¬ë¡ ì¡°ì‚¬ ê²°ê³¼ë¥¼ ë³´ë„. 
 
-![JTBC ´º½º·ë 2017. 2¿ù](../pics/poll_2017_JTBC.jpg)
+![JTBC ë‰´ìŠ¤ë£¸ 2017. 2ì›”](../pics/poll_2017_JTBC.jpg)
 
-¸·´ëÀÇ ³ôÀÌ¿¡ ÀÇ±¸½ÉÀ» Ç¥ÇÑ ½ÃÃ»ÀÚµéÀÇ Ç×ÀÇ¿¡ Á÷¸éÇÔ. 
+ë§‰ëŒ€ì˜ ë†’ì´ì— ì˜êµ¬ì‹¬ì„ í‘œí•œ ì‹œì²­ìë“¤ì˜ í•­ì˜ì— ì§ë©´í•¨. 
 
-Á¦´ë·Î µÈ ¸·´ë±×·¡ÇÁ¸¦ ±×¸®¸é¼­ R Base plot°ú ggplot¿¡ ´ëÇÏ¿© ÇĞ½À.
+ì œëŒ€ë¡œ ëœ ë§‰ëŒ€ê·¸ë˜í”„ë¥¼ ê·¸ë¦¬ë©´ì„œ R Base plotê³¼ ggplotì— ëŒ€í•˜ì—¬ í•™ìŠµ.
 
 
 ## Data Setup
 
 ```{r, data}
-candidates <- c("¹®ÀçÀÎ", "¾ÈÈñÁ¤", "È²±³¾È", "¾ÈÃ¶¼ö", "ÀÌÀç¸í", "À¯½Â¹Î") 
+candidates <- c("ë¬¸ì¬ì¸", "ì•ˆí¬ì •", "í™©êµì•ˆ", "ì•ˆì² ìˆ˜", "ì´ì¬ëª…", "ìœ ìŠ¹ë¯¼") 
 rates <- c(33, 22, 9, 9, 5, 2)
-party <- c("´õºÒ¾î¹ÎÁÖ´ç", "ÀÚÀ¯ÇÑ±¹´ç", "±¹¹ÎÀÇ´ç", "¹Ù¸¥Á¤´ç")
-colour.party <- c("skyblue", "lightgrey", "darkgreen", "darkblue")
-candidates.party <-  c("´õºÒ¾î¹ÎÁÖ´ç", "´õºÒ¾î¹ÎÁÖ´ç", "ÀÚÀ¯ÇÑ±¹´ç", "±¹¹ÎÀÇ´ç", "´õºÒ¾î¹ÎÁÖ´ç", "¹Ù¸¥Á¤´ç")
-match(candidates.party, party)
-candidates.colour <- colour.party[match(candidates.party, party)]
+party <- c("ë”ë¶ˆì–´ë¯¼ì£¼ë‹¹", "ììœ í•œêµ­ë‹¹", "êµ­ë¯¼ì˜ë‹¹", "ë°”ë¥¸ì •ë‹¹")
+colour_party <- c("skyblue", "lightgrey", "darkgreen", "darkblue")
+candidates_party <-  c("ë”ë¶ˆì–´ë¯¼ì£¼ë‹¹", "ë”ë¶ˆì–´ë¯¼ì£¼ë‹¹", "ììœ í•œêµ­ë‹¹", "êµ­ë¯¼ì˜ë‹¹", "ë”ë¶ˆì–´ë¯¼ì£¼ë‹¹", "ë°”ë¥¸ì •ë‹¹")
+match(candidates_party, party)
+candidates_colour <- colour_party[match(candidates_party, party)]
 ```
+
+<P style = "page-break-before:always">
 
 ## Barplot (R Base)
 
 ```{r, fig.width = 8, fig.height = 4}
 barplot(rates)
+```
+
+<P style = "page-break-before:always">
+
+```{r, fig.width = 8, fig.height = 4}
+par(family = "HCR Dotum LVT")
 b1 <- barplot(rates, 
               axes = FALSE, 
-              col = candidates.colour, 
+              col = candidates_colour, 
               names.arg = candidates,
               cex.names = 1.2)
-text(x = b1, y = rates + c(rep(-3, 4), rep(1.5, 2)), labels = rates, cex = 1.2)
-main.title <- "´ë¼±ÁÖÀÚ ÁöÁöÀ²(%)"
-title(main = main.title, cex.main = 1.5)
+text(x = b1, y = rates + c(rep(-3, 4), rep(1.5, 2)), 
+     labels = rates, 
+     cex = 1.2)
+main_title <- "ëŒ€ì„ ì£¼ì ì§€ì§€ìœ¨(%)"
+title(main = main_title, 
+      cex.main = 1.5)
 ```
+
+<P style = "page-break-before:always">
 
 ## ggplot
 
 ```{r, ggplot, fig.width = 8, fig.height = 4}
 library(ggplot2)
-candidates.f <- factor(candidates, levels = candidates)
-rates.df <- data.frame(ÈÄº¸ = candidates.f, 
-                       Á¤´ç = candidates.party, 
-                       »ö±ò = candidates.colour,
-                       ÁöÁöµµ = rates)
-g0 <- ggplot(data = rates.df, 
-             mapping = aes(x = ÈÄº¸, y = ÁöÁöµµ))
+candidates_f <- factor(candidates, 
+                       levels = candidates)
+rates_df <- data.frame(í›„ë³´ = candidates_f, 
+                       ì •ë‹¹ = candidates_party, 
+                       ìƒ‰ê¹” = candidates_colour,
+                       ì§€ì§€ë„ = rates)
+g0 <- ggplot(data = rates_df, 
+             mapping = aes(x = í›„ë³´, 
+                           y = ì§€ì§€ë„))
 (g1 <- g0 +
   geom_bar(stat = "identity"))
+```
+
+<P style = "page-break-before:always">
+
+```{r, fig.height = 4, fig.width = 8}
 (g1 <- g0 +
   geom_bar(stat = "identity", 
-           fill = candidates.colour))
+           fill = candidates_colour))
 (g2 <- g1 +
-  theme_bw())
+  theme_bw(base_family = "HCR Dotum LVT"))
 (g3 <- g2 +
-  geom_text(mapping = aes(x = ÈÄº¸, 
-                          y = ÁöÁöµµ + c(rep(-3, 4), rep(2, 2)), 
-                          label = ÁöÁöµµ), 
+  geom_text(mapping = aes(x = í›„ë³´, 
+                          y = ì§€ì§€ë„ + c(rep(-3, 4), rep(2, 2)), 
+                          label = ì§€ì§€ë„), 
                           size = 6))
 (g4 <- g3 +
-  labs(title = main.title))
+  labs(title = main_title))
+```
+
+<P style = "page-break-before:always">
+
+```{r, fig.height = 4, fig.width = 8}
 (g5 <- g4 +
   theme(plot.title = element_text(hjust = 0.5)))
 (g6 <- g5 +
   scale_y_continuous(breaks = rates, labels = rates))
+```
+
+<P style = "page-break-before:always">
+
+```{r, fig.height = 4, fig.width = 8}
 (g7 <- g6 +
   theme(panel.border = element_blank(),
         axis.title.x = element_blank(),
@@ -76,12 +106,18 @@ g0 <- ggplot(data = rates.df,
         axis.text.x = element_text(vjust = 0),
         axis.ticks = element_blank(), 
         axis.text.y = element_blank()))
+```
+
+<P style = "page-break-before:always">
+
+```{r, fig.height = 4, fig.width = 8}
 (g8 <- g7 +
     ggtitle("") +
     annotate("text", 
              x = mean(b1), 
              y = Inf, 
-             label = main.title, 
+             label = main_title, 
              vjust = 1.5, 
-             size = 6))
+             size = 6,
+             family = "HCR Dotum LVT"))
 ```

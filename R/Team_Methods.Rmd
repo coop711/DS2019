@@ -35,26 +35,26 @@ kable(class_roll)
 ### 학번
 
 ```{r, id}
+ID_17 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2017, 
+                       "17학번", "16학번이전"), 
+                levels = c("17학번", "16학번이전"))
+kable(table("팀" = class_roll$group, 
+            "17학번 기준" = ID_17))
 ID_16 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2016, 
-                       "younger_16", "older_16"), 
-                levels = c("younger_16", "older_16"))
+                       "16학번이후", "15학번이전"), 
+                levels = c("16학번이후", "15학번이전"))
 kable(table("팀" = class_roll$group, 
             "16학번 기준" = ID_16))
 ID_15 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2015, 
-                       "younger_15", "older_15"), 
-                levels = c("younger_15", "older_15"))
+                       "15학번이후", "14학번이전"), 
+                levels = c("15학번이후", "14학번이전"))
 kable(table("팀" = class_roll$group,
             "15학번 기준" = ID_15))
 ID_14 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2014, 
-                       "younger_14", "older_14"), 
-                levels = c("younger_14", "older_14"))
+                       "14학번이후", "13학번이전"), 
+                levels = c("14학번이후", "13학번이전"))
 kable(table("팀" = class_roll$group,
             "14학번 기준" = ID_14))
-ID_13 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2013, 
-                       "younger_13", "older_13"), 
-                levels = c("younger_13", "older_13"))
-kable(table("팀" = class_roll$group,
-            "13학번 기준" = ID_13))
 ```
 
 ### email 서비스업체
