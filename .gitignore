@@ -5,8 +5,4 @@
 .Ruserdata
 R/*.html
 R/*.rda
-<<<<<<< HEAD
-=======
-pics/*.png
->>>>>>> d4a6151a759eb79d415a491be20fa81fd498cecc
 R/rsconnect/*
