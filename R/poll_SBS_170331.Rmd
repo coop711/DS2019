@@ -84,7 +84,7 @@ b1 <- barplot(rates,
               cex.names = 1.2,
               ylim = c(0, max(rates) * 1.1))
 mtext(side = 1, at = b1, line = 0, text = candidates)
-## Rates written on top of the Bars with different Colours
+#> Rates written on top of the Bars with different Colours
 text(x = b1, y = rates + rep(1.5, 8), 
     labels = paste(c_rates, "%", sep = ""), 
     col = col_rates, 
@@ -92,7 +92,7 @@ text(x = b1, y = rates + rep(1.5, 8),
 main_title <- "대선주자 지지도"
 note_text <- "조사기관:리얼미터, 총응답자:전국 성인 1,525명, 응답률:9.5%, 표준오차:95%신뢰수준 2.5%,
 조사방법:유선 ARS 10%, 무선 ARS 71%, 무선전화면접 19%, 조사기간:2017년 3월27일(월)~29일(수)" 
-## Main title inside the plot region
+#> Main title inside the plot region
 title(main = main_title, cex.main = 1.5, line = -2)
 ```
 
@@ -109,22 +109,22 @@ b1 <- barplot(rates,
               cex.names = 1.2,
               ylim = c(0, max(rates) * 1.1))
 mtext(side = 1, at = b1, line = 0, text = candidates)
-## text for integer part
+#> text for integer part
 text(x = b1 - c(rep(0.4, 3), rep(0.3, 5)), y = rates + rep(1.5, 8), 
      labels = a, 
      col = col_rates, 
      cex = 1.6)
-## text for digits
+#> text for digits
 text(x = b1 + 0.2, y = rates + rep(1.5, 8), 
      labels = b_perc, 
      col = col_rates, 
      cex = 1.2)
-## Rectagle for main title
+#> Rectagle for main title
 rect(xleft = mean(b1) - 2, ybottom = max(rates) - 6, xright = mean(b1) + 2, 
      ytop = max(rates), col = "dodgerblue4")
-## Main title
+#> Main title
 text(x = mean(b1), y = max(rates) - 3, labels = main_title, col = "white", cex = 1.5)
-## Text for notes
+#> Text for notes
 text(x = mean(b1) - 2, y = max(rates) - 8, labels = note_text, cex = 0.5, adj = 0)
 ```
 <P style = "page-break-before:always">
