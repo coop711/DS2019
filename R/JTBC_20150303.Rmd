@@ -1,0 +1,67 @@
+---
+title: "JTBC 20150303"
+author: "coop711"
+date: '2018 3 25 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+## Problem
+
+JTBC 뉴스룸에서 김영란법 국회 통과에 관련하여 여론조사한 결과라고 보여 준 자료는 더 이상 남아 있지 않으나 트위터에 다음과 같은 내용으로 남아 있다. 
+
+`r include_graphics("../pics/JTBC_20150303.png")`
+
+이 도표의 문제점을 여러 네티즌들이 지적하였더니 방송본에는 다음과 같은 스크린캡처가 남아 있다.
+
+`r include_graphics("../pics/JTBC_20150303v2.png")`
+
+이 도표를 제대로 그리면 어떻게 나오는지 알아보자. Base R의 `pie()`함수를 활용한다. 
+도표 안의 레이블 좌표는 극좌표 변환식 $x = r cos(\theta), y = r sin(\theta)$를 이용한다.
+
+## Data
+
+```{r}
+poll <- c(64.0, 7.3, 28.7)
+names(poll) <- c("잘했다", "잘못했다", "모르겠다")
+#> 도표 안 레이블의 좌표 계산. 각도를 어떻게 계산하는지 유의할 것
+text_x <- 0.75 * cos(c(0, 
+                       ((25 + 28.7) + (25 + 28.7 + 7.3)) * pi / 100, 
+                       (25 + (25 + 28.7)) * pi / 100))
+text_y <- 0.75 * sin(c(0, 
+                       ((25 + 28.7) + (25 + 28.7 + 7.3)) * pi / 100, 
+                       (25 + (25 + 28.7)) * pi / 100))
+kable(t(as.matrix(poll)), caption = "김영란법 국회 통과")
+```
+
+<P style ="page-break-before: always">
+
+## `pie()`
+
+```{r}
+par(family = "HCR Dotum LVT")
+pie(poll, 
+    labels = names(poll), 
+    radius = 1,
+    clockwise = TRUE, 
+    init.angle = 90, 
+    col = c("blue", "red", "gray"))
+par(new = TRUE)
+pie(1,
+    labels = "",
+    radius = 0.5,
+    border = NA,
+    col = "white")
+text(x = 0, y = 0, 
+     labels = "%", 
+     cex = 1.5)
+text(x = text_x, y = text_y, 
+     labels = format(poll, nsmall = 1), 
+     col = "white", 
+     cex = 1.5)
+title(main = "김영란법\n국회 통과")
+```
