@@ -1,7 +1,7 @@
 ---
 title: "JTBC 20150303"
 author: "coop711"
-date: '2018 3 25 '
+date: '2018-03-26'
 output: html_document
 ---
 
@@ -14,14 +14,14 @@ library(knitr)
 
 JTBC 뉴스룸에서 김영란법 국회 통과에 관련하여 여론조사한 결과라고 보여 준 자료는 더 이상 남아 있지 않으나 트위터에 다음과 같은 내용으로 남아 있다. 
 
-`r include_graphics("../pics/JTBC_20150303.png")`
+`r include_graphics("../pics/JTBC_20150303.png", dpi = NA)`
 
 이 도표의 문제점을 여러 네티즌들이 지적하였더니 방송본에는 다음과 같은 스크린캡처가 남아 있다.
 
 `r include_graphics("../pics/JTBC_20150303v2.png")`
 
 이 도표를 제대로 그리면 어떻게 나오는지 알아보자. Base R의 `pie()`함수를 활용한다. 
-도표 안의 레이블 좌표는 극좌표 변환식 $x = r cos(\theta), y = r sin(\theta)$를 이용한다.
+도표 안의 레이블 좌표는 극좌표 변환식 $x = r \cos(\theta), y = r \sin(\theta)$를 이용한다.
 
 ## Data
 
@@ -43,7 +43,7 @@ kable(t(as.matrix(poll)), caption = "김영란법 국회 통과")
 ## `pie()`
 
 ```{r}
-par(family = "HCR Dotum LVT")
+par(family = "")
 pie(poll, 
     labels = names(poll), 
     radius = 1,
