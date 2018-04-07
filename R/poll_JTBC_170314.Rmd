@@ -1,7 +1,7 @@
 ---
 title: "JTBC News Room 2017-03-14"
 author: "coop711"
-date: '2018 3 24 '
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -119,7 +119,8 @@ g3
 
 ```{r, fig.height = 5, fig.width = 8}
 g4 <- g3 + 
-    scale_fill_manual(name = "경선참여", values = bar_pal)
+    scale_fill_manual(name = "경선참여", 
+                      values = bar_pal)
 g4
 ```
 
@@ -135,7 +136,9 @@ g5
 
 ```{r, fig.height = 5, fig.width = 8}
 g6 <- g5 +
-    scale_y_continuous(name = "사례수", breaks = counts, labels = counts)
+    scale_y_continuous(name = "사례수", 
+                       breaks = counts, 
+                       labels = counts)
 g6
 ```
 
@@ -143,7 +146,8 @@ g6
 
 ```{r, fig.height = 5, fig.width = 8}
 g7 <- g6 +
-    labs(title = main_title, subtitle = sub_title)
+    labs(title = main_title, 
+         subtitle = sub_title)
 g7
 ```
 

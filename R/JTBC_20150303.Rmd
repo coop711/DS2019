@@ -21,7 +21,7 @@ JTBC 뉴스룸에서 김영란법 국회 통과에 관련하여 여론조사한 
 `r include_graphics("../pics/JTBC_20150303v2.png")`
 
 이 도표를 제대로 그리면 어떻게 나오는지 알아보자. Base R의 `pie()`함수를 활용한다. 
-도표 안의 레이블 좌표는 극좌표 변환식 $x = r cos(\theta), y = r sin(\theta)$를 이용한다.
+도표 안의 레이블 좌표는 극좌표 변환식 $x = r \cos(\theta), y = r \sin(\theta)$를 이용한다.
 
 ## Data
 

@@ -63,7 +63,7 @@ text(x = 8, y = 60,
 
 ## ggplot
 
-### Data for ggplot
+### Data for `ggplot()`
 
 ```{r, data reshaping}
 library(reshape2)
@@ -80,7 +80,7 @@ str(rates_df_melt)
 
 <P style = "page-break-before:always">
 
-### Geom_bar
+### `geom_bar()`
 
 ```{r, fig.width = 8, fig.height = 4}
 library(ggplot2)
