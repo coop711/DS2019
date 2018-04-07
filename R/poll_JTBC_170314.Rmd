@@ -57,7 +57,7 @@ kable(counts_df)
 ## Barplot
 
 ```{r, fig.height = 6, fig.width = 8}
-par(family = "HCR Dotum LVT")
+par(family = "")
 bar_pal <- brewer.pal(4, "Set1")
 barplot(t(as.matrix(counts_df[, 3:6])), 
         axes = FALSE, 
@@ -81,7 +81,8 @@ text(4, 250, main_text)
 
 ```{r, fig.height = 5, fig.width = 8}
 library(reshape2)
-counts_df$party_f <- factor(party, levels = party)
+counts_df$party_f <- factor(party, 
+                            levels = party)
 kable(counts_df)
 str(counts_df)
 counts_df_melt <- melt(counts_df, 
@@ -93,7 +94,7 @@ counts_df_melt2 <- counts_df_melt[counts_df_melt$Participation != "사례수", ]
 library(ggplot2)
 # ggplot(data = counts_df_melt2, mapping = aes(x = party_f, y = Counts, fill = Participation)) +
 #   geom_bar(stat = "identity") + 
-#   theme_bw(base_family = "HCR Dotum LVT") +
+#   theme_bw(base_family = "") +
 #     scale_fill_manual(name = "경선참여", values = c("red", "cyan")) +
 #     scale_x_discrete(name = "지지정당") +
 #     scale_y_continuous(name = "사례수", breaks = counts, labels = counts) +
@@ -111,7 +112,7 @@ g2
 
 ```{r, fig.height = 5, fig.width = 8}
 g3 <- g2 +
-  theme_bw(base_family = "HCR Dotum LVT")
+  theme_bw(base_family = "")
 g3
 ```
 
