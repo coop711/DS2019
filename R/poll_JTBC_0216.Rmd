@@ -64,7 +64,7 @@ text(x = 8, y = 60,
 
 ## ggplot
 
-### Data for ggplot
+### Data for `ggplot()`
 
 ```{r, data reshaping}
 library(reshape2)

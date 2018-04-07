@@ -28,7 +28,7 @@ match(candidates_party, party)
 candidates_colour <- colour_party[match(candidates_party, party)]
 ```
 
-### strsplit
+### `strsplit()`
 
 ```{r, strsplit}
 c_rates <- format(rates, nsmall = 1, justify = "right")
@@ -47,22 +47,16 @@ col_rates <- c("red", "orange", rep("darkblue", 6))
 
 ## Barplot (R Base)
 
-```{r, fig.width = 8, fig.height = 4}
+```{r, fig.width = 8, fig.height = 3.6}
 barplot(rates)
-```
-
-### Font Specification
-
-```{r, font family}
-par(family = "")
 ```
 
 <P style = "page-break-before:always">
 
-### Names under Bars
+### Place Names under Bars
 
-```{r, names, fig.width = 8, fig.height = 4}
-par(family = "")
+```{r, names, fig.width = 8, fig.height = 3.6}
+par(family = "HCR Dotum LVT")
 b1 <- barplot(rates, 
               axes = FALSE, 
               col = "dodgerblue", 
@@ -73,7 +67,7 @@ b1 <- barplot(rates,
 
 <P style = "page-break-before:always">
 
-### Names closer to Bars using mtext
+### Names closer to Bars using `mtext()`
 
 ```{r, names closer to bars,  fig.width = 8, fig.height = 4}
 par(family = "")
@@ -149,7 +143,7 @@ g0 <- ggplot(data = rates_df,
              mapping = aes(x = 후보, y = 지지도))
 ```
 
-### geom_bar with single colour for the bars
+### `geom_bar()` with single colour for the bars
 
 ```{r, single colour for the bars 2, fig.width = 8, fig.height = 4}
 (g1 <- g0 +
@@ -277,7 +271,7 @@ g0 <- ggplot(data = rates_df,
 
 <P style = "page-break-before:always">
 
-### geom_label to enclose the main title in bounding box
+### `geom_label()` to enclose the main title in bounding box
 
 ```{r, bounding box main title, fig.width = 8, fig.height = 4}
 (g9.1 <- g8 +
@@ -298,7 +292,8 @@ g0 <- ggplot(data = rates_df,
 
 ```{r, notes 2, fig.width = 8, fig.height = 4}
 (g9.2 <- g9.1 + 
-    annotate("text", x = mean(b1) - 1, y = max(rates) - 8, 
+    annotate("text", 
+             x = mean(b1) - 1, y = max(rates) - 8, 
              label = note_text, 
              size = 2, 
              hjust = 0,

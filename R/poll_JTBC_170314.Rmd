@@ -1,7 +1,7 @@
 ---
 title: "JTBC News Room 2017-03-14"
 author: "coop711"
-date: '2018 3 24 '
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
