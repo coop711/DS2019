@@ -1,0 +1,259 @@
+---
+title: "King Sejong's National Referendum on Tax Reform : Data (Piping)"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Data
+
+### Reading Data 
+
+Original data came from intenet version of Sejong silok, summarized by Oh, Ki-Soo.
+
+`r knitr::include_graphics("../pics/sejong_poll_data.png", dpi =  NA)`
+
+```{r, setup, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pander)
+library(knitr)
+library(magrittr)
+library(printr)
+options(width = 180)
+```
+
+```{r, reading data}
+sejong_poll <- "../data/sejong_poll.txt" %>% 
+  read.table(header = TRUE, stringsAsFactors = FALSE)
+sejong_poll %>% str
+sejong_poll %>% `[`(., 4:1) %>% kable 
+```
+
+### Factor conversion
+
+We need vote, class, region as `factor`s. If you leave them as `chr`, it will be coerced to `factor` when you tabulate it according to alphabetical order, which is not what you want. 
+So, use `factor()` to convert them manually. 
+
+```{r}
+sejong_poll$vote %<>% 
+  factor(levels = c("yes","no"), labels = c("Yes", "No"))
+```
+
+You can check that `labels = ` is not necessary if same as levels. Continue with class and region_
+
+```{r}
+class_levels <- c("high","third.current", "third.ex", "chief", "ordinary")
+class_labels <- c("High","3rd_current", "3rd_former", "Chief", "Commons")
+sejong_poll$class %<>% 
+  factor(levels = class_levels, labels = class_labels)
+```
+
+```{r}
+region_levels <- c("Seoul", "yuhu", "gyunggi", "pyungan", "hwanghae", "chungcheong", "kangwon", "hamgil", "gyungsang", "jeolla")
+# region_labels <- c("Seoul", "Yuhu", "Gyunggi", "Pyungan", "Hwanghae", "Chungcheong", "Kangwon", "Hamgil", "Gyungsang", "Jeolla")
+region_labels <- c("SL","YH", "GG", "PA", "HH", "CC", "KW", "HG", "GS", "JL")
+sejong_poll$region %<>% 
+  factor(levels = region_levels, labels = region_labels)
+```
+
+```{r}
+sejong_poll %>% str
+```
+
+### Array
+
+We can set up the data as an array
+
+```{r, array structure}
+sejong_poll_array <- sejong_poll %>% 
+  xtabs(counts ~ vote + class + region, data = .)
+sejong_poll_array %>% str
+sejong_poll_array %>% ftable 
+```
+<P style = "page-break-before:always">
+
+## Votes
+
+### Total
+
+Check the total vote with xtabs()
+
+```{r, total yes or no}
+vote_total <- sejong_poll %>% 
+  xtabs(counts ~ vote, data = .) 
+vote_total %>%
+  as.matrix %>%
+  t %>%
+  kable(align = c("c", "c"))
+vote_total %>%
+  prop.table %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  as.matrix %>%
+  t %>%
+  kable(align = c("c", "c"))
+vote_total_a <- sejong_poll_array %>% 
+  apply(MARGIN = 1, FUN = sum) 
+vote_total_a %>%
+  as.matrix %>%
+  t %>%
+  kable(align = c("c", "c"))
+```
+
+<P style = "page-break-before:always">
+
+### Vote by class
+
+```{r, by class}
+vote_class <- sejong_poll %>% 
+  xtabs(counts ~ vote + class, data = .) 
+vote_class %>%
+  kable(caption = "By Class")
+vote_class %>% 
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(caption = "By Class(%)", align = "r")
+vote_class_a <- sejong_poll_array %>%
+  apply(MARGIN = 1:2, FUN = sum) 
+vote_class_a %>%
+  kable(caption = "By Class(%)")
+```
+
+<P style = "page-break-before:always">
+
+### Commons vs Bureaucrats
+
+We need to analyse Commons separately. 
+
+```{r, commons vs bureaus}
+sejong_poll$class_2 <- sejong_poll$class %>%
+  `==`("Commons") %>%
+  ifelse("Commons", "Bureaus") %>%
+  factor(levels = c("Bureaus", "Commons"))
+sejong_poll %>% 
+  `[`(., c(4, 3, 5, 2, 1)) %>%
+  head(n = 10) %>%
+  kable
+sejong_poll %>% str
+```
+
+<P style = "page-break-before:always">
+
+Compare the votes by `class_2`,  (Bureaucrats vs Commons)
+
+```{r, vote by class_2}
+vote_class_2 <- sejong_poll %>%
+  xtabs(counts ~ vote + class_2, data = .)
+vote_class_2 %>% 
+  kable(caption = "By Bureaus and Commons")
+vote_class_2 %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(caption = "By Bureaus and Commons(%)", align = "r")
+vote_class_2_a <- vote_class_a %>% 
+  `[`(, -5) %>%
+  rowSums %>%
+  cbind("Bureaus" = ., "Commons" = vote_class_a %>% `[`(, 5))
+vote_class_2_a %>% 
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(caption = "By Bureaus and Commons(%)", align = "r")
+```
+
+<P style = "page-break-before:always">
+
+```{r}
+vote_class_2_a %>% kable(caption = "By Bureaus and Commons")
+```
+
+Add subtotals to the margins, 
+
+```{r}
+vote_class_2 %>% addmargins %>% kable
+```
+
+Compute the marginal proportions. Note the use of `digits = 3` and `nsmall = 1`.
+
+```{r, proportions}
+vote_class_2 %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(caption = "Bureaus and Commons(%)", align = "r")
+```
+
+<P style = "page-break-before:always">
+
+### Votes by region with respect to class_2 
+
+Count the vote by region class_2 wise.
+
+```{r}
+class_2 <- sejong_poll$class_2
+vote_region_bureaus <- sejong_poll %>%
+  subset(.$class_2 == "Bureaus") %>%
+  xtabs(counts ~ vote + region,
+        data = ., drop = TRUE)
+vote_region_bureaus %>% 
+  kable(caption = "Bureaus by Region")
+vote_region_bureaus %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(caption = "Bureaus by Region(%)", align = "r")
+vote_region_commons <- sejong_poll %>%
+  subset(.$class_2 == "Commons") %>%
+  xtabs(counts ~ vote + region,
+        data = ., drop = TRUE)
+vote_region_commons %>% kable(caption = "Commons by Region")
+vote_region_commons %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 1, nsmall = 1) %>%
+  kable(caption = "Commons by Region(%)", align = "r")
+```
+
+### Seoul
+
+Seoul has three times more Bureaucrats than other regions, so analyse further.
+
+```{r, Seoul}
+vote_seoul_class <- sejong_poll %>%
+  subset(.$region == "SL") %>%
+  xtabs(counts ~ vote + class,
+        data = ., drop = TRUE)
+vote_seoul_class %>% kable(caption = "Seoul")
+vote_seoul_class %>% 
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 2, nsmall = 1) %>%
+  kable(caption = "Seoul(%)", align = "r")
+```
+
+<P style = "page-break-before:always">
+
+### Chungcheong's case.
+
+```{r, Chungcheong}
+vote_chung_class <- sejong_poll %>%
+  subset(.$region == "CC", drop = TRUE) %>%
+  xtabs(counts ~ vote + class, data = ., drop = TRUE) 
+vote_chung_class %>% 
+  kable
+vote_chung_class %>% 
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(caption = "Chuncheong", align = "r")
+```
+
+- Save the working directory image.
+
+```{r, save}
+save.image(file = "sejong_poll_data_v2.RData")
+```
+
+
