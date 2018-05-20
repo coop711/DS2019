@@ -1,155 +1,148 @@
 ---
-title: "King Sejong's National Referendum on Tax Reform (ggplot)"
-author: "coop711"
-date: "`r Sys.Date()`"
+title: "세종대왕의 세법개혁과 국민투표 (ggplot) "
 output: html_document
 ---
 
 ## Data 
 
-원자료는 [세종실록](http://sillok.history.go.kr/id/kda_11208010_005), 요약표는 오기수 교수의 논문에서.
+원자료는 [세종실록](http://sillok.history_go_kr/id/kda_11208010_005), 요약표는 오기수 교수의 논문에서.
 
-![](../pics/sejong_poll_data.png)
+`r knitr::include_graphics("../pics/sejong_poll_data.png")`
 
-```{r, data, echo = FALSE, message = FALSE, results = 'hide'}
+```{r, echo = FALSE, message = FALSE, results = 'hide'}
 knitr::opts_chunk$set(echo = TRUE)
-# library(pander)
 library(knitr)
+library(magrittr)
 library(ggplot2)
 library(grid)
 library(gridExtra)
 library(extrafont)
-# panderOptions('table.split.table', Inf)
 load("sejong_poll_data_kr.RData")
-str(sejong.poll.kr)
+str(sejong_poll_kr)
 ```
 
-```{r, kable, echo = FALSE, results = 'asis'}
-v.names.kr <- c("집계", "찬반", "계급", "지역", "관료여부")
-# kable(sejong.poll.kr[c(4, 3, 5, 2, 1)])
-kable(sejong.poll.kr[c(4, 3, 5, 2, 1)], col.names = v.names.kr[c(4, 3, 5, 2, 1)], align = c(rep('c', 4), 'r'))
+```{r, echo = FALSE, results = 'asis'}
+vnames_kr <- c("집계", "찬반", "계급", "지역", "신분")
+sejong_poll_kr %>% 
+  `[`(c(4, 3, 5, 2, 1)) %>%
+  kable(col.names = vnames_kr %>% `[`(c(4, 3, 5, 2, 1)), align = "r")
 ```
 
-<!--
 <P style = "page-break-before:always">
--->
 
 ## 전체 찬반
 
 ```{r, overall votes}
-# pander(format(tbl.vote, big.mark = ","))
-kable(t(as.matrix(format(tbl.vote, 
-                         big.mark = ","))), 
-      caption = "전체 찬반", align = 'c')
-kable(t(as.table(format(tbl.vote, 
-                        big.mark = ","))), 
-      caption = "전체 찬반", 
-      align = 'c')
-kable(t(as.table(format(prop.table(tbl.vote)*100, 
-                        digits = 3, 
-                        nsmall = 1))), 
-      caption = "전체 찬반(%)", 
-      align = 'c')
+vote_total %>%
+  as.matrix %>%
+  t %>%
+  format(big.mark = ",") %>%
+  kable(caption = "전체 찬반", align = "r")
+#> `as.matrix`를 `as.table`로 바꿔서 수행하여도 됨.
+vote_total %>%
+  as.matrix %>%
+  t %>%
+  prop.table %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(caption = "전체 찬반(%)", align = "r")
 ```
 
 <P style = "page-break-before:always">
 
 ### 원형그래프
 
-```{r, data for pie charts, message = FALSE}
+```{r, message = FALSE}
 source("./theme_kr.R")
-# str(theme.kr)
-str(tbl.vote)
-kable(t(as.matrix(tbl.vote)))
-vote.df <- as.data.frame(tbl.vote)
-n.vote <- length(levels(vote.df[, 1]))
-y.coord <- vote.df$Freq/2 + c(0, cumsum(head(vote.df$Freq, -1)))
-pie.label <- paste(levels(vote.df$vote), 
-                   format(vote.df$Freq, 
-                          big.mark = ","), 
-                   sep = "\n") 
-pie.label
-kable(vote.df, 
-      align = rep("c", 2))
-str(vote.df)
+# str(theme_kr)
+# str(vote_total)
+vote_total %>% str
+# vote_df <- as.data.frame(vote_total)
+vote_df <- vote_total %>% as.data.frame
+# n_vote <- length(levels(vote_df[, 1]))
+n_vote <- vote_df %>% `[`(, 1) %>% levels %>% length
+# y_coord <- vote_df$Freq/2 + c(0, cumsum(head(vote_df$Freq, -1)))
+y_coord <- vote_df %>% `[`(, "Freq") %>% `/`(2) %>% `+`(., vote_df %>% `[`(, "Freq") %>% head(n = -1) %>% c(0, .))
+# pie_label <- paste(levels(vote_df$vote), 
+#                    format(vote_df$Freq, big.mark = ","), sep = "\n") 
+pie_label <- vote_df %>% .$Freq %>% levels %>% 
+  paste(., vote_df %>% .$Freq %>% format(big.mark = ","), sep = "\n") 
+pie_label
+# kable(vote_df, align = "r")
+vote_df %>% kable(align = "r")
+# str(vote_df)
+vote_df %>% str
 ```
 
 <P style = "page-break-before:always">
 
-```{r, coord_polar, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-p1 <- ggplot(data = vote.df, 
-             mapping = aes(x = "", 
-                           y = Freq, 
-                           fill = vote)) 
+```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
+p1 <- ggplot(data = vote_df, mapping = aes(x = "", y = Freq, fill = vote)) 
 p2 <- p1 + 
-  geom_bar(width = 1, 
-           stat = "identity", 
+  geom_bar(width = 1, stat = "identity", 
            position = position_stack(reverse = TRUE))
 p2
-p2.2 <- p1 + 
-  geom_bar(width = 1, 
-           stat = "identity", 
-           position = "dodge")
-p2.2
+p2_2 <- p1 + 
+  geom_bar(width = 1, stat = "identity", position = "dodge")
+p2_2
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-p3.2 <- p2.2 + 
-  theme_bw() + theme.kr
-p3.2
-p4.2 <- p3.2 + 
+p3_2 <- p2_2 + 
+  theme_bw() + theme_kr
+p3_2
+p4_2 <- p3_2 + 
   scale_x_discrete(name = "찬반") +
-  scale_y_continuous(name = "집계", 
-                     breaks = vote.df$Freq, 
-                     labels = format(vote.df$Freq, big.mark = ","))
-p4.2
+  scale_y_continuous(name = "집계", breaks = vote_df$Freq, 
+                     labels = format(vote_df$Freq, big.mark = ","))
+p4_2
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-p5.2 <- p4.2 +
+p5_2 <- p4_2 +
   scale_fill_manual(name = "찬반", 
-                    values = rainbow(n.vote)[n.vote:1], 
-                    labels = vote.df$vote)
-p5.2
-p6.2 <- p5.2 +
-  geom_text(aes(y = vote.df$Freq/2), 
-            label = format(rev(vote.df$Freq), big.mark = ","), 
+                    values = rainbow(n_vote)[n_vote:1], 
+                    labels = vote_df$vote)
+p5_2
+p6_2 <- p5_2 +
+  geom_text(aes(y = vote_df$Freq / 2), 
+            label = format(rev(vote_df$Freq), big.mark = ","), 
 #            family = "HCR Dotum LVT", 
             position = position_dodge(width = 1))
-p6.2
+p6_2
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-p7.2 <- p6.2 +
+p7_2 <- p6_2 +
   theme(legend.position = c(0.25, 0.75))
-p7.2
-p8.2 <- p5.2 +
+p7_2
+p8_2 <- p5_2 +
   guides(fill = "none") +
-  geom_text(aes(y = vote.df$Freq/2),
+  geom_text(aes(y = vote_df$Freq/2),
             family = "HCR Dotum LVT", 
-            label = rev(pie.label),
+            label = rev(pie_label),
             position = position_dodge(width = 1))
-p8.2
-# ggsave("../pics/sejong_geom_bar_total_ggplot.png", p7.2, dpi = 72)
+p8_2
+# ggsave("../pics/sejong_geom_bar_total_ggplot.png", p7_2, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
 p3 <- p2 + 
-  theme_bw() + theme.kr
+  theme_bw() + theme_kr
 p3 
 p4 <- p3 + 
   scale_x_discrete(name = "찬반") +
   scale_y_continuous(name = "집계", 
-                     breaks = cumsum(vote.df$Freq), 
-                     labels = format(cumsum(vote.df$Freq), big.mark = ","))
+                     breaks = cumsum(vote_df$Freq), 
+                     labels = format(cumsum(vote_df$Freq), big.mark = ","))
 p4
 ```
 
@@ -157,11 +150,12 @@ p4
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
 p5 <- p4 +
-  scale_fill_manual(name = "찬반", values = rainbow(2)[2:1], labels = vote.df$vote)
+  scale_fill_manual(name = "찬반", 
+                    values = rainbow(2)[2:1], labels = vote_df$vote)
 p5
 p6 <- p5 + 
-  geom_text(aes(y = y.coord), 
-            label = format(vote.df$Freq, big.mark = ","), 
+  geom_text(aes(y = y_coord), 
+            label = format(vote_df$Freq, big.mark = ","), 
 #            family = "HCR Dotum LVT", 
             position = position_identity())  
 p6
@@ -176,8 +170,8 @@ p7 <- p6 +
 p7
 p8 <- p5 + 
   guides(fill = "none") +
-  geom_text(aes(y = y.coord),
-            label = pie.label,
+  geom_text(aes(y = y_coord),
+            label = pie_label,
             family = "HCR Dotum LVT", 
             position = position_identity())
 p8
@@ -186,63 +180,64 @@ p8
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-pie.total.1 <- p2 + 
+pie_total_1 <- p2 + 
   coord_polar(theta = "y", 
               start = 3 * pi /2 , 
               direction = -1)
-pie.total.1
-pie.total.2 <- pie.total.1 + 
+pie_total_1
+pie_total_2 <- pie_total_1 + 
   scale_y_continuous(name = "", 
                      breaks = NULL) +
   scale_x_discrete(name = "") 
-pie.total.2
+pie_total_2
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-pie.total.3 <- pie.total.2 +
+pie_total_3 <- pie_total_2 +
   scale_fill_manual(name = "", 
-                    values = rainbow(n.vote)[n.vote:1])
-pie.total.3
-pie.total.4 <- pie.total.3 +
+                    values = rainbow(n_vote)[n_vote:1])
+pie_total_3
+pie_total_4 <- pie_total_3 +
   theme_void(base_family = "HCR Dotum LVT")
-pie.total.4
+pie_total_4
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-pie.total.5 <- pie.total.4 +
+pie_total_5 <- pie_total_4 +
   guides(fill = "none")
-pie.total.5
-pie.total.6 <- pie.total.5 +
-  geom_text(aes(y = y.coord), 
-            label = pie.label, 
+pie_total_5
+pie_total_6 <- pie_total_5 +
+  geom_text(aes(y = y_coord), 
+            label = pie_label, 
             family = "HCR Dotum LVT", 
             position = position_identity())
-pie.total.6
+pie_total_6
 ```
 
 <P style = "page-break-before:always">
 
-```{r, message = FALSE, fig.width = 4, fig.height = 4}
-pie.total.7 <- pie.total.6 +
+```{r, message = FALSE, fig.width = 4, fig_height = 4}
+pie_total_7 <- pie_total_6 +
   ggtitle("전체 찬반") +
-  theme(plot.margin = unit(c(1, 1, 1.5, 1), "lines"), plot.title = element_text(hjust = 0.5, size = 20))
-pie.total.7
-ggsave("../pics/sejong_total_pie_ggplot.png", pie.total.7, dpi = 72)
+  theme(plot.margin = unit(c(1, 1, 1.5, 1), "lines"), 
+        plot.title = element_text(hjust = 0.5, size = 20))
+pie_total_7
+ggsave("../pics/sejong_total_pie_ggplot.png", pie_total_7, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
 
-#### `pie.gg()`
+#### `pie_gg()`
 
-```{r, pie.gg}
-pie.gg <- function(df, ggtitle = "", font.family = ""){
+```{r, pie_gg}
+pie_gg <- function(df, ggtitle = "", font.family = ""){
   n <- length(names(df))
-  y.coord <- df$Freq / 2 + c(0, cumsum(head(df$Freq, -1)))
-  pie.label <- paste(levels(df$vote), format(df$Freq, big.mark = ","), 
+  y_coord <- df$Freq / 2 + c(0, cumsum(head(df$Freq, -1)))
+  pie_label <- paste(levels(df$vote), format(df$Freq, big.mark = ","), 
                      sep = "\n") 
   p1 <- ggplot(df, aes(x = "", 
                        y = Freq, 
@@ -251,40 +246,40 @@ pie.gg <- function(df, ggtitle = "", font.family = ""){
     geom_bar(width = 1, 
              stat = "identity", 
              position = position_stack(reverse = TRUE))
-  pie.1 <- p2 + 
+  pie_1 <- p2 + 
     coord_polar(theta = "y", 
                 start = 3 * pi / 2, 
                 direction = -1)
-  pie.2 <- pie.1 + 
+  pie_2 <- pie_1 + 
     scale_y_continuous(name = "", 
                        breaks = NULL) +
     scale_x_discrete(name = "") 
-  pie.3 <- pie.2 +
+  pie_3 <- pie_2 +
     scale_fill_manual(name = "", 
                       values = rainbow(n)[n:1])
-  pie.4 <- pie.3 +
+  pie_4 <- pie_3 +
     theme_void(base_family = font.family)
-  pie.5 <- pie.4 +
+  pie_5 <- pie_4 +
     guides(fill = "none")
-  pie.6 <- pie.5 +
-    geom_text(aes(y = y.coord), 
-              label = pie.label, 
+  pie_6 <- pie_5 +
+    geom_text(aes(y = y_coord), 
+              label = pie_label, 
               family = font.family, 
               position = position_identity())
-  pie.7 <- pie.6 +
+  pie_7 <- pie_6 +
     ggtitle(ggtitle) + 
     theme(plot.margin = unit(c(1, 1, 1.5, 1), "lines"), 
           plot.title = element_text(hjust = 0.5))
-  return(pie.7)
+  return(pie_7)
 }
-dump("pie.gg", 
-     file = "./pie.gg.R")
+dump("pie_gg", 
+     file = "./pie_gg.R")
 ```
 
 <P style = "page-break-before:always">
 
-```{r, message = FALSE, fig.width = 4, fig.height = 4}
-pie.gg(vote.df, 
+```{r, message = FALSE, fig.width = 4, fig_height = 4}
+pie_gg(vote_df, 
        ggtitle = "전체 찬반", 
        font.family = "HCR Dotum LVT")
 ```
@@ -296,12 +291,12 @@ pie.gg(vote.df,
 ## 계급별 찬반
 
 ```{r, vote by classes}
-kable(format(vote.class, 
+kable(format(vote_class, 
              big.mark = ","), 
       align = "r", 
       caption = "계급별 찬반")
-kable(format(prop.table(vote.class, 
-                        margin = 2)*100, 
+kable(format(prop.table(vote_class, 
+                        margin = 2) * 100, 
              digits = 3, 
              nsmall = 1), 
       align = "r", 
@@ -313,7 +308,7 @@ kable(format(prop.table(vote.class,
 품관촌민의 수효가 상대적으로 많아서
 
 ```{r, vote by class2}
-kable(format(vote.class.2, 
+kable(format(vote_class_2, 
              big.mark = ","), 
       align = rep("r", 2), 
       caption = "품관촌민")
@@ -322,7 +317,7 @@ kable(format(vote.class.2,
 소계를 교차표의 주변에 계산
 
 ```{r, addmargins}
-kable(format(vote.class.2.am, 
+kable(format(vote_class_2_am, 
              big.mark = ","), 
       caption = "관료와 품관촌민(소계)", 
       align = rep("r", 3))
@@ -331,39 +326,39 @@ kable(format(vote.class.2.am,
 백분율을 계산하여 주변에 집계. 
 
 ```{r, Percentage}
-kable(format(prop.table(vote.class.2, 
-                        margin = 2)*100, 
+kable(format(prop.table(vote_class_2, 
+                        margin = 2) * 100, 
              digits = 3, nsmall = 1), 
       caption = "관료와 품관촌민(%)", 
-      align = rep("r", 3))
+      align = "r")
 ```
 
 ### data frame 변환
 
 ```{r, message = FALSE}
-vote.class.2.df <- as.data.frame(vote.class.2)
-v.names.class.kr <- c("찬반", "계급", "집계")
-kable(format(vote.class.2.df, 
+vote_class_2_df <- as.data.frame(vote_class_2)
+vnames_class_kr <- c("찬반", "계급", "집계")
+kable(format(vote_class_2_df, 
              big.mark = ","), 
       align = c('c', 'c', 'r'), 
-      col.names = v.names.class.kr, 
+      col.names = vnames_class_kr, 
       caption = "관료와 품관촌민")
-vote.bureaus.df <- subset(vote.class.2.df, 
-                          vote.class.2.df$class.2 == "관료", 
+vote_bureaus_df <- subset(vote_class_2_df, 
+                          vote_class_2_df$class_2 == "관료", 
                           select = c("vote", "Freq"))
-kable(format(vote.bureaus.df, 
+kable(format(vote_bureaus_df, 
              big.mark = ","), 
       align = 'r', 
-      col.names = v.names.class.kr[-2], 
+      col.names = vnames_class_kr[-2], 
       caption = "관료의 찬반")
-vote.commons.df <- subset(vote.class.2.df, 
-                          vote.class.2.df$class.2 == "품관촌민", 
+vote_commons_df <- subset(vote_class_2_df, 
+                          vote_class_2_df$class_2 == "품관촌민", 
                           select = c("vote", "Freq"))
-kable(format(vote.commons.df, 
+kable(format(vote_commons_df, 
              big.mark = ","), 
       align = 'r', 
       row.names = FALSE, 
-      col.names = v.names.class.kr[-2], 
+      col.names = vnames_class_kr[-2], 
       caption = "품관촌민의 찬반")
 ```
 
@@ -371,19 +366,19 @@ kable(format(vote.commons.df,
 
 ### 원형그래프
 
-```{r, coord_polar.2, message = FALSE, fig.width = 8, fig.height = 4}
-pie.bureaus <- pie.gg(vote.bureaus.df, 
+```{r, coord_polar_2, message = FALSE, fig.width = 8, fig_height = 4}
+pie_bureaus <- pie_gg(vote_bureaus_df, 
                       ggtitle = "관료의 찬반", 
                       font.family = "HCR Dotum LVT")
-pie.commons <- pie.gg(vote.commons.df, 
+pie_commons <- pie_gg(vote_commons_df, 
                       ggtitle = "품관촌민의 찬반", 
                       font.family = "HCR Dotum LVT")
-pies.grid <- grid.arrange(pie.bureaus, 
-                          pie.commons, 
+pies_grid <- grid.arrange(pie_bureaus, 
+                          pie_commons, 
                           ncol = 2, 
                           top = "")
-pies.grid
-ggsave("../pics/sejong_bureaus_commons_pie_ggplot.png", pies.grid, width = 8, height = 4, dpi = 72)
+pies_grid
+ggsave("../pics/sejong_bureaus_commons_pie_ggplot.png", pies_grid, width = 8, height = 4, dpi = 72)
 ```
 <P style = "page-break-before:always">
 
@@ -392,19 +387,19 @@ ggsave("../pics/sejong_bureaus_commons_pie_ggplot.png", pies.grid, width = 8, he
 ### 관료와 품관촌민
 
 ```{r, by region}
-kable(vote.region.bureaus, 
+kable(vote_region_bureaus, 
       caption = "관료들의 지역별 찬반")
-kable(format(prop.table(vote.region.bureaus, 
+kable(format(prop.table(vote_region_bureaus, 
                         margin = 2) * 100, 
              digits = 3, 
              nsmall = 1), 
       align = rep("r", 9), 
       caption = "관료들의 지역별 찬반(%)")
-kable(format(vote.region.commons, 
+kable(format(vote_region_commons, 
              big.mark = ","), 
       align = rep("r", 9), 
       caption = "품관촌민들의 지역별 찬반")
-kable(format(prop.table(vote.region.commons, 
+kable(format(prop.table(vote_region_commons, 
                         margin = 2) * 100, 
              digits = 1, 
              nsmall = 1), 
@@ -415,9 +410,9 @@ kable(format(prop.table(vote.region.commons,
 ## 서울의 찬반
 
 ```{r, Seoul}
-kable(vote.seoul.class, 
+kable(vote_seoul_class, 
       caption = "서울의 찬반")
-kable(format(prop.table(vote.seoul.class, 
+kable(format(prop.table(vote_seoul_class, 
                         margin = 2) * 100, 
              digits = 1, 
              nsmall = 1), 
@@ -431,177 +426,177 @@ kable(format(prop.table(vote.seoul.class,
 
 ##### Stack
 
-```{r, seoul geom_bar stack, fig.width = 6, fig.height = 4.5}
-vote.seoul.df <- as.data.frame(vote.seoul.class)
-n.fill <- length(levels(vote.seoul.df[, 1]))
-x.stack <- vote.seoul.df[, 2]
-y.stack <- unlist(tapply(vote.seoul.df$Freq, 
-                         vote.seoul.df$class, 
+```{r, seoul geom_bar stack, fig.width = 6, fig_height = 4.5}
+vote_seoul_df <- as.data.frame(vote_seoul_class)
+n_fill <- length(levels(vote_seoul_df[, 1]))
+x_stack <- vote_seoul_df[, 2]
+y_stack <- unlist(tapply(vote_seoul_df$Freq, 
+                         vote_seoul_df$class, 
                          function(x){x / 2 + 
                              c(0, cumsum(head(x, -1)))}))
-y.breaks <- unlist(tapply(vote.seoul.df$Freq, 
-                         vote.seoul.df$class, 
+y_breaks <- unlist(tapply(vote_seoul_df$Freq, 
+                         vote_seoul_df$class, 
                          cumsum))
-y.label <- format(y.breaks, big.mark = ",")
-b1.seoul <- ggplot(vote.seoul.df, 
-                   aes(x = x.stack, 
+y_label <- format(y_breaks, big.mark = ",")
+b1_seoul <- ggplot(vote_seoul_df, 
+                   aes(x = x_stack, 
                        y = Freq, 
                        fill = vote)) +
   geom_bar(stat = "identity", 
            position = position_stack(reverse = TRUE))
-b1.seoul
-b2.seoul <- b1.seoul +
+b1_seoul
+b2_seoul <- b1_seoul +
   theme_bw(base_family = "HCR Dotum LVT") +
-  theme.kr +
+  theme_kr +
   scale_x_discrete(name = "계급") +
   scale_y_continuous(name = "집계", 
-                     breaks = y.breaks, 
-                     labels = y.label) +
+                     breaks = y_breaks, 
+                     labels = y_label) +
   scale_fill_manual(name = "찬반", 
-                    values = rainbow(n.fill)[n.fill:1], 
-                    labels = vote.seoul.df$vote)
-b2.seoul  
+                    values = rainbow(n_fill)[n_fill:1], 
+                    labels = vote_seoul_df$vote)
+b2_seoul  
 ```
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
-b3.seoul <- b2.seoul +
-# geom_text(aes(y = y.stack/2), label = vote.seoul.df$Freq)
-  geom_text(aes(y = y.stack), 
-            label = vote.seoul.df$Freq, 
+```{r, fig.width = 6, fig_height = 4.5}
+b3_seoul <- b2_seoul +
+# geom_text(aes(y = y_stack/2), label = vote_seoul_df$Freq)
+  geom_text(aes(y = y_stack), 
+            label = vote_seoul_df$Freq, 
             position = "identity")
-b3.seoul
-ggsave("../pics/sejong_seoul_barplot_stack_ggplot.png", b3.seoul, width = 6, height = 4.5, dpi = 72)
+b3_seoul
+ggsave("../pics/sejong_seoul_barplot_stack_ggplot.png", b3_seoul, width = 6, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
 
 #### Dodge
 
-```{r, seoul geom_bar dodge, fig.width = 6, fig.height = 4.5}
-n.fill <- length(levels(vote.seoul.df[, 1]))
-b1.seoul.dodge <- ggplot(vote.seoul.df, 
-                         aes(x = x.stack, 
+```{r, seoul geom_bar dodge, fig.width = 6, fig_height = 4.5}
+n_fill <- length(levels(vote_seoul_df[, 1]))
+b1_seoul_dodge <- ggplot(vote_seoul_df, 
+                         aes(x = x_stack, 
                              y = Freq, 
                              fill = vote)) +
   geom_bar(stat = "identity", position = "dodge")
-b1.seoul.dodge
+b1_seoul_dodge
 ```
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
-b2.seoul.dodge <- b1.seoul.dodge +
+```{r, fig.width = 6, fig_height = 4.5}
+b2_seoul_dodge <- b1_seoul_dodge +
   theme_bw(base_family = "HCR Dotum LVT") +
-  theme.kr +
+  theme_kr +
   scale_x_discrete(name = "계급") +
   scale_y_continuous(name = "집계", 
-                     breaks = vote.seoul.df$Freq, 
-                     labels = vote.seoul.df$Freq) +
+                     breaks = vote_seoul_df$Freq, 
+                     labels = vote_seoul_df$Freq) +
   scale_fill_manual(name = "찬반", 
-                    values = rainbow(n.fill)[n.fill:1], 
-                    labels = vote.seoul.df$vote)
-b2.seoul.dodge  
+                    values = rainbow(n_fill)[n_fill:1], 
+                    labels = vote_seoul_df$vote)
+b2_seoul_dodge  
 ```
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
-#  N <- nrow(vote.seoul.df)
+```{r, fig.width = 6, fig_height = 4.5}
+#  N <- nrow(vote_seoul_df)
 #  index <- as.vector(matrix(1:N, nrow = 2)[2:1, ])
-y.label <- unlist(tapply(vote.seoul.df$Freq, 
-                                 vote.seoul.df$class,
+y_label <- unlist(tapply(vote_seoul_df$Freq, 
+                                 vote_seoul_df$class,
                                  rev))
-b3.seoul.dodge <- b2.seoul.dodge +
-  geom_text(aes(y = vote.seoul.df$Freq/2), 
-#            label = vote.seoul.df[index, "Freq"], 
-            label = y.label,
+b3_seoul_dodge <- b2_seoul_dodge +
+  geom_text(aes(y = vote_seoul_df$Freq/2), 
+#            label = vote_seoul_df[index, "Freq"], 
+            label = y_label,
             position = position_dodge(width = 0.9)) +
   ggtitle("서울의 찬반")
-b3.seoul.dodge
-# ggsave("../pics/sejong_seoul_barplot_dodge_ggplot.png", b3.seoul.dodge, width = 6, height = 4.5, dpi = 72)
+b3_seoul_dodge
+# ggsave("../pics/sejong_seoul_barplot_dodge_ggplot.png", b3_seoul_dodge, width = 6, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
 
 #### Fill
 
-```{r, seoul geom_bar fill, fig.width = 6, fig.height = 4.5}
-n.fill <- length(levels(vote.seoul.df[, 1]))
-y.fill <- unlist(tapply(vote.seoul.df$Freq, 
-                        x.stack, 
+```{r, seoul geom_bar fill, fig.width = 6, fig_height = 4.5}
+n_fill <- length(levels(vote_seoul_df[, 1]))
+y_fill <- unlist(tapply(vote_seoul_df$Freq, 
+                        x_stack, 
                         function(x){cumsum(x)/sum(x)}))
-p.fill <- unlist(tapply(vote.seoul.df$Freq, 
-                        x.stack, 
+p_fill <- unlist(tapply(vote_seoul_df$Freq, 
+                        x_stack, 
                         function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
-b1.seoul.fill <- ggplot(vote.seoul.df, 
-                        aes(x = x.stack, 
+b1_seoul_fill <- ggplot(vote_seoul_df, 
+                        aes(x = x_stack, 
                             y = Freq, 
                             fill = vote)) +
   geom_bar(stat = "identity", 
            position = position_fill(reverse = TRUE))
-b1.seoul.fill
+b1_seoul_fill
 ```
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
-b2.seoul.fill <- b1.seoul.fill +
+```{r, fig.width = 6, fig_height = 4.5}
+b2_seoul_fill <- b1_seoul_fill +
   theme_bw(base_family = "HCR Dotum LVT") +
-  theme.kr +
+  theme_kr +
   scale_x_discrete(name = "계급") +
   scale_y_continuous(name = "집계(%)", 
-                     breaks = y.fill, 
-                     labels = format(y.fill * 100, 
+                     breaks = y_fill, 
+                     labels = format(y_fill * 100, 
                                      digits = 2, 
                                      nsmall = 1)) +
   scale_fill_manual(name = "찬반", 
-                    values = rainbow(n.fill)[n.fill:1], 
-                    labels = vote.seoul.df$vote)
-b2.seoul.fill  
+                    values = rainbow(n_fill)[n_fill:1], 
+                    labels = vote_seoul_df$vote)
+b2_seoul_fill  
 ```
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
-b3.seoul.fill <- b2.seoul.fill +
-  geom_text(aes(y = p.fill), 
-            label = vote.seoul.df$Freq, 
+```{r, fig.width = 6, fig_height = 4.5}
+b3_seoul_fill <- b2_seoul_fill +
+  geom_text(aes(y = p_fill), 
+            label = vote_seoul_df$Freq, 
             position = "identity") +
   ggtitle("서울의 찬반")
-b3.seoul.fill
-# ggsave("../pics/sejong_seoul_barplot_fill_ggplot.png", b3.seoul.fill, width = 6, height = 4.5, dpi = 72)
+b3_seoul_fill
+# ggsave("../pics/sejong_seoul_barplot_fill_ggplot.png", b3_seoul_fill, width = 6, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
 
-### barplot.gg
+### barplot_gg
 
 #### Stack 
 
 ```{r, stack}
-barplot.gg.stack <- function(df, 
+barplot_gg_stack <- function(df, 
                              base_family = "", 
                              ggtitle = "", 
                              xlab = "", 
                              ylab = "", 
-                             fill.name = ""){
-n.fill <- length(levels(df[, 1]))
+                             fill_name = ""){
+n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
 y <- unlist(tapply(df$Freq, 
                    x, 
                    function(x){x / 2 + c(0, cumsum(head(x, -1)))}))
-y.breaks <- unlist(tapply(df$Freq, 
+y_breaks <- unlist(tapply(df$Freq, 
                          x, 
                          cumsum))
-y.label <- format(y.breaks, big.mark = ",")
-delta <- (max(y.breaks) - min(y.breaks)) / 20
-y.breaks.sort <- sort(y.breaks)
-diff(y.breaks.sort) < delta 
-index <- which(diff(y.breaks.sort)  > delta)
-y.breaks <- c(0, y.breaks.sort[c(index, length(y.breaks.sort))])
-y.label <- format(y.breaks, big.mark = ",")
+y_label <- format(y_breaks, big.mark = ",")
+delta <- (max(y_breaks) - min(y_breaks)) / 20
+y_breaks_sort <- sort(y_breaks)
+diff(y_breaks_sort) < delta 
+index <- which(diff(y_breaks_sort)  > delta)
+y_breaks <- c(0, y_breaks_sort[c(index, length(y_breaks_sort))])
+y_label <- format(y_breaks, big.mark = ",")
 b1 <- ggplot(df, 
              aes(x = x, 
                  y = Freq, 
@@ -610,13 +605,13 @@ b1 <- ggplot(df,
            position = position_stack(reverse = TRUE))
 b2 <- b1 +
   theme_bw(base_family = base_family) +
-#  theme.kr +
+#  theme_kr +
   scale_x_discrete(name = xlab) +
   scale_y_continuous(name = ylab, 
-                     breaks = y.breaks,
-                     labels = y.label) +
-  scale_fill_manual(name = fill.name, 
-                    values = rainbow(n.fill)[n.fill:1], 
+                     breaks = y_breaks,
+                     labels = y_label) +
+  scale_fill_manual(name = fill_name, 
+                    values = rainbow(n_fill)[n_fill:1], 
                     labels = df$vote, 
                     guide = guide_legend())
 b3 <- b2 +
@@ -634,15 +629,15 @@ return(b3)
 #### Dodge
 
 ```{r, dodge}
-barplot.gg.dodge <- function(df, 
+barplot_gg_dodge <- function(df, 
                              base_family = "", 
                              ggtitle = "", 
                              xlab = "", 
                              ylab = "", 
-                             fill.name = ""){
-n.fill <- length(levels(df[, 1]))
+                             fill_name = ""){
+n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y.dodge <- df$Freq
+y_dodge <- df$Freq
 b1 <- ggplot(df, 
              aes(x = x, 
                  y = Freq, 
@@ -651,23 +646,23 @@ b1 <- ggplot(df,
            position = "dodge")
 b2 <- b1 +
   theme_bw(base_family = base_family) +
-#  theme.kr +
+#  theme_kr +
   scale_x_discrete(name = xlab) +
   scale_y_continuous(name = ylab, 
-                     breaks = y.dodge,
-                     labels = format(y.dodge, big.mark = ",")) +
-  scale_fill_manual(name = fill.name, 
-                    values = rainbow(n.fill)[n.fill:1], 
+                     breaks = y_dodge,
+                     labels = format(y_dodge, big.mark = ",")) +
+  scale_fill_manual(name = fill_name, 
+                    values = rainbow(n_fill)[n_fill:1], 
                     labels = df$vote)
 #  N <- nrow(df)
 #  index <- as.vector(matrix(1:N, nrow = 2)[2:1, ])
-y.label <- unlist(tapply(df$Freq, 
+y_label <- unlist(tapply(df$Freq, 
                          df[, 2],
                          rev))
 b3 <- b2 +
-  geom_text(aes(y = y.dodge/2), 
+  geom_text(aes(y = y_dodge/2), 
 #            label = format(df[index, "Freq"], big.mark = ","), 
-            label = y.label,
+            label = y_label,
             position = position_dodge(width = 0.9)) +
   ggtitle(ggtitle)
 return(b3)
@@ -679,18 +674,18 @@ return(b3)
 #### Fill
 
 ```{r, fill}
-barplot.gg.fill <- function(df, 
+barplot_gg_fill <- function(df, 
                             base_family = "", 
                             ggtitle = "", 
                             xlab = "", 
                             ylab = "", 
-                            fill.name = ""){
-n.fill <- length(levels(df[, 1]))
+                            fill_name = ""){
+n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y.fill <- unlist(tapply(df$Freq, 
+y_fill <- unlist(tapply(df$Freq, 
                    x, 
                    function(x){cumsum(x)/sum(x)}))
-p.fill <- unlist(tapply(df$Freq, 
+p_fill <- unlist(tapply(df$Freq, 
                         x, 
                         function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
 b1 <- ggplot(df, 
@@ -701,19 +696,19 @@ b1 <- ggplot(df,
            position = position_fill(reverse = TRUE))
 b2 <- b1 +
   theme_bw(base_family = base_family) +
-#  theme.kr +
+#  theme_kr +
   scale_x_discrete(name = xlab) +
   scale_y_continuous(name = ylab, 
-                     breaks = y.fill,
-                     labels = format(y.fill * 100,
+                     breaks = y_fill,
+                     labels = format(y_fill * 100,
                                      digits = 2,
                                      nsmall = 1)) +
-  scale_fill_manual(name = fill.name, 
-                    values = rainbow(n.fill)[n.fill:1], 
+  scale_fill_manual(name = fill_name, 
+                    values = rainbow(n_fill)[n_fill:1], 
                     labels = df$vote, 
                     guide = guide_legend())
 b3 <- b2 +
-  geom_text(aes(y = p.fill), 
+  geom_text(aes(y = p_fill), 
             label = format(df$Freq, big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
@@ -723,77 +718,77 @@ return(b3)
 
 <P style = "page-break-before:always">
 
-#### barplot.gg
+#### barplot_gg
 
-```{r, barplot.gg, message = FALSE}
-barplot.gg <- function(x, 
+```{r, barplot_gg, message = FALSE}
+barplot_gg <- function(x, 
                        position, 
                        base_family = "", 
                        ggtitle = "", 
                        xlab = "", 
                        ylab = "", 
-                       fill.name = ""){
+                       fill_name = ""){
   switch(position,
-         stack = barplot.gg.stack(x, 
+         stack = barplot_gg_stack(x, 
                                   base_family = base_family, 
                                   ggtitle = ggtitle, 
                                   xlab = xlab, 
                                   ylab = ylab, 
-                                  fill.name = fill.name),
-         dodge = barplot.gg.dodge(x, 
+                                  fill_name = fill_name),
+         dodge = barplot_gg_dodge(x, 
                                   base_family = base_family, 
                                   ggtitle = ggtitle, 
                                   xlab = xlab, 
                                   ylab = ylab, 
-                                  fill.name = fill.name),
-         fill = barplot.gg.fill(x, 
+                                  fill_name = fill_name),
+         fill = barplot_gg_fill(x, 
                                 base_family = base_family, 
                                 ggtitle = ggtitle, 
                                 xlab = xlab, 
                                 ylab = ylab, 
-                                fill.name = fill.name))
+                                fill_name = fill_name))
 }
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, seoul_stack, fig.width = 6, height = 4.5}
-(bar_seoul_stack <- barplot.gg(vote.seoul.df, 
+(bar_seoul_stack <- barplot_gg(vote_seoul_df, 
                                position = "stack", 
                                base_family = "HCR Dotum LVT", 
                                ggtitle = "서울의 찬반", 
                                xlab = "계급", 
                                ylab = "집계", 
-                               fill.name = "찬반"))
+                               fill_name = "찬반"))
 # ggsave("../pics/sejong_seoul_barplot_stack_ggplotv2.png", bar_seoul_stack, width = 6, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, seoul_dodge, fig.width = 6, height = 4.5}
-(bar_seoul_dodge <- barplot.gg(vote.seoul.df, 
+(bar_seoul_dodge <- barplot_gg(vote_seoul_df, 
                                position = "dodge", 
                                base_family = "HCR Dotum LVT", 
                                ggtitle = "서울의 찬반", 
                                xlab = "계급", 
                                ylab = "집계", 
-                               fill.name = "찬반"))
+                               fill_name = "찬반"))
 # ggsave("../pics/sejong_seoul_barplot_dodge_ggplotv2.png", bar_seoul_dodge, width = 6, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, seoul_fill, fig.width = 6, height = 4.5}
-(bar_seoul_fill <- barplot.gg(vote.seoul.df, 
+(bar_seoul_fill <- barplot_gg(vote_seoul_df, 
                               position = "fill", 
                               base_family = "HCR Dotum LVT", 
                               ggtitle = "서울의 찬반", 
                               xlab = "계급", 
                               ylab = "집계(%)", 
-                              fill.name = "찬반"))
+                              fill_name = "찬반"))
 # ggsave("../pics/sejong_seoul_barplot_fill_ggplotv2.png", bar_seoul_fill, width = 6, height = 4.5, dpi = 72)
-dump(c("barplot.gg","barplot.gg.stack", "barplot.gg.dodge", "barplot.gg.fill"), 
-     file = "./barplot.gg.R")
+dump(c("barplot_gg","barplot_gg_stack", "barplot_gg_dodge", "barplot_gg_fill"), 
+     file = "./barplot_gg_R")
 ```
 
 <P style = "page-break-before:always">
@@ -803,36 +798,34 @@ dump(c("barplot.gg","barplot.gg.stack", "barplot.gg.dodge", "barplot.gg.fill"),
 #### Data
 
 ```{r, message = FALSE}
-vote.seoul.class.df <- as.data.frame(vote.seoul.class)
-vote.seoul.class.sum <- tapply(vote.seoul.class.df$Freq, 
-                               vote.seoul.class.df[, 2], 
+vote_seoul_class_df <- as.data.frame(vote_seoul_class)
+vote_seoul_class_sum <- tapply(vote_seoul_class_df$Freq, 
+                               vote_seoul_class_df[, 2], 
                                sum)
-vote.seoul.class.p.m <- prop.table(vote.seoul.class.sum)
-vote.seoul.class.p <- prop.table(vote.seoul.class)
-vote.seoul.class.p.2 <- prop.table(vote.seoul.class, 
+vote_seoul_class_p_m <- prop.table(vote_seoul_class_sum)
+vote_seoul_class_p <- prop.table(vote_seoul_class)
+vote_seoul_class_p_2 <- prop.table(vote_seoul_class, 
                                    margin = 2)
-vote.seoul.class.p.df <- as.data.frame(vote.seoul.class.p)
-vote.seoul.class.p.df$width <- vote.seoul.class.p.m[match(vote.seoul.class.p.df$class, 
-                                                          names(vote.seoul.class.p.m))]
-vote.seoul.class.p.2.df <- as.data.frame(vote.seoul.class.p.2)
-vote.seoul.class.p.df$height <- vote.seoul.class.p.2.df$Freq
-vote.seoul.class.p.df$label.height <- unlist(tapply(vote.seoul.class.p.df$height,
-                                                    vote.seoul.class.p.df$class, 
-                                                    function(x) x / 2 + c(0, cumsum(head(x, -1)))))
-vote.seoul.class.p.df$y.breaks <- unlist(tapply(vote.seoul.class.p.df$height,
-                                                    vote.seoul.class.p.df$class, 
+vote_seoul_class_p_df <- as.data.frame(vote_seoul_class_p)
+vote_seoul_class_p_df$width <- vote_seoul_class_p_m[match(vote_seoul_class_p_df$class, 
+                                                          names(vote_seoul_class_p_m))]
+vote_seoul_class_p_2_df <- as.data.frame(vote_seoul_class_p_2)
+vote_seoul_class_p_df$height <- vote_seoul_class_p_2_df$Freq
+vote_seoul_class_p_df$label_height <- unlist(tapply(vote_seoul_class_p_df$height, vote_seoul_class_p_df$class, function(x) x / 2 + c(0, cumsum(head(x, -1)))))
+vote_seoul_class_p_df$y_breaks <- unlist(tapply(vote_seoul_class_p_df$height,
+                                                    vote_seoul_class_p_df$class, 
                                                     cumsum))
-x.center <- vote.seoul.class.p.m / 2 + c(0, cumsum(head(vote.seoul.class.p.m, -1)))
-# x.center <- (cumsum(vote.seoul.class.p.m) + 
-#               c(0, head(cumsum(vote.seoul.class.p.m), -1)))/2
-vote.seoul.class.p.df$center <- x.center[match(vote.seoul.class.p.df$class, 
-                                               names(x.center))]
+x_center <- vote_seoul_class_p_m / 2 + c(0, cumsum(head(vote_seoul_class_p_m, -1)))
+# x_center <- (cumsum(vote_seoul_class_p_m) + 
+#               c(0, head(cumsum(vote_seoul_class_p_m), -1)))/2
+vote_seoul_class_p_df$center <- x_center[match(vote_seoul_class_p_df$class, 
+                                               names(x_center))]
 ```
 
 <P style = "page-break-before:always">
 
-```{r, mosaic plot for seoul ggplot, fig.width = 6, fig.height = 4.5}
-m1 <- ggplot(vote.seoul.class.p.df, 
+```{r, mosaic plot for seoul ggplot, fig.width = 6, fig_height = 4.5}
+m1 <- ggplot(vote_seoul_class_p_df, 
              aes(x = center, 
                  y = height, 
                  width = width)) + 
@@ -846,7 +839,7 @@ m1
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
+```{r, fig.width = 6, fig_height = 4.5}
 m2 <- m1 + 
   theme_bw(base_family = "HCR Dotum LVT")
 m2
@@ -854,22 +847,22 @@ m2
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
+```{r, fig.width = 6, fig_height = 4.5}
 m3 <- m2 + 
   geom_text(aes(x = center, 
                 y = 1.05), 
-            label = vote.seoul.class.p.df$class, 
+            label = vote_seoul_class_p_df$class, 
             family = "HCR Dotum LVT")
 m3
 ```
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
+```{r, fig.width = 6, fig_height = 4.5}
 m4 <- m3 + 
   geom_text(aes(x = center, 
-                y = label.height), 
-            label = format(vote.seoul.class.df$Freq, 
+                y = label_height), 
+            label = format(vote_seoul_class_df$Freq, 
                            big.mark = ","), 
             position = position_identity())
 m4
@@ -877,29 +870,29 @@ m4
 
 <P style = "page-break-before:always">
 
-```{r, fig.width = 6, fig.height = 4.5}
-x.breaks <- c(0, ifelse(cumsum(vote.seoul.class.p.m) < 0.1, 0.0, cumsum(vote.seoul.class.p.m)))
-x.label <- format(x.breaks * 100, 
+```{r, fig.width = 6, fig_height = 4.5}
+x_breaks <- c(0, ifelse(cumsum(vote_seoul_class_p_m) < 0.1, 0.0, cumsum(vote_seoul_class_p_m)))
+x_label <- format(x_breaks * 100, 
                   digits = 3, 
                   nsmall = 1)
-y.breaks <- vote.seoul.class.p.df$y.breaks
-delta <- (max(y.breaks) - min(y.breaks)) / 20
-y.breaks.sort <- sort(y.breaks)
-index <- which(diff(y.breaks.sort)  > delta)
-y.breaks <- c(0, y.breaks.sort[c(index, length(y.breaks.sort))])
-y.label <- format(y.breaks * 100,
+y_breaks <- vote_seoul_class_p_df$y_breaks
+delta <- (max(y_breaks) - min(y_breaks)) / 20
+y_breaks_sort <- sort(y_breaks)
+index <- which(diff(y_breaks_sort)  > delta)
+y_breaks <- c(0, y_breaks_sort[c(index, length(y_breaks_sort))])
+y_label <- format(y_breaks * 100,
                   digits = 2,
                   nsmall = 1)
 m5 <- m4 + 
   scale_x_continuous(name = "계급(누적 %)", 
-                     breaks = x.breaks, 
-                     label = x.label) + 
+                     breaks = x_breaks, 
+                     label = x_label) + 
   scale_y_continuous(name = "찬반(%)",
-                     breaks = y.breaks,
-                     label = y.label) + 
+                     breaks = y_breaks,
+                     label = y_label) + 
   scale_fill_manual(name = "찬반", 
                     values = rainbow(2)[2:1], 
-                    labels = vote.seoul.df$vote, 
+                    labels = vote_seoul_df$vote, 
                     guide = guide_legend()) +
   ggtitle("서울의 찬반")
 m5
@@ -911,28 +904,28 @@ m5
 
 #### mosaic_gg
 
-```{r mosaic_gg, fig.width = 6, fig.height = 4.5}
+```{r mosaic_gg, fig.width = 6, fig_height = 4.5}
 mosaic_gg <- function(tbl, base_family = "", 
                       ggtitle = "", 
                       xlab = "", 
                       ylab = "", 
-                      fill.name = ""){
-tbl.df <- as.data.frame(tbl)
-N <- length(levels(tbl.df[, 1]))
-tbl.sum <- tapply(tbl.df$Freq, tbl.df[, 2], sum)
-tbl.p.m <- prop.table(tbl.sum)
-tbl.p <- prop.table(tbl)
-tbl.p.2 <- prop.table(tbl, margin = 2)
-tbl.p.df <- as.data.frame(tbl.p)
-tbl.p.df$width <- tbl.p.m[match(tbl.p.df[, 2], names(tbl.p.m))]
-tbl.p.df$height <- as.data.frame(tbl.p.2)$Freq
-tbl.p.df$label.height <- unlist(tapply(tbl.p.df$height, tbl.p.df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
-tbl.p.df$y.breaks <- unlist(tapply(tbl.p.df$height, tbl.p.df[, 2], cumsum))
-x.center <- tbl.p.m / 2 + c(0, cumsum(head(tbl.p.m, -1)))
-# x.center <- (cumsum(tbl.p.m) + c(0, head(cumsum(tbl.p.m), -1)))/2
-tbl.p.df$center <- x.center[match(tbl.p.df[, 2], names(x.center))]
-m1 <- ggplot(tbl.p.df, aes(x = center, y = height, width = width)) + 
-  geom_bar(aes(fill = tbl.df[1]), 
+                      fill_name = ""){
+tbl_df <- as.data.frame(tbl)
+N <- length(levels(tbl_df[, 1]))
+tbl_sum <- tapply(tbl_df$Freq, tbl_df[, 2], sum)
+tbl_p_m <- prop.table(tbl_sum)
+tbl_p <- prop.table(tbl)
+tbl_p_2 <- prop.table(tbl, margin = 2)
+tbl_p_df <- as.data.frame(tbl_p)
+tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))]
+tbl_p_df$height <- as.data.frame(tbl_p_2)$Freq
+tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
+tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], cumsum))
+x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
+# x_center <- (cumsum(tbl_p_m) + c(0, head(cumsum(tbl_p_m), -1)))/2
+tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
+m1 <- ggplot(tbl_p_df, aes(x = center, y = height, width = width)) + 
+  geom_bar(aes(fill = tbl_df[1]), 
            stat = "identity", 
            col = "white", 
            size = 1, 
@@ -941,35 +934,35 @@ m2 <- m1 +
   theme_bw(base_family = base_family)
 m3 <- m2 + 
   geom_text(aes(x = center, y = 1.05), 
-            label = tbl.p.df[, 2], 
+            label = tbl_p_df[, 2], 
             family = base_family)
 m4 <- m3 + 
-  geom_text(aes(x = center, y = label.height), 
-            label = format(tbl.df$Freq, big.mark = ","), 
+  geom_text(aes(x = center, y = label_height), 
+            label = format(tbl_df$Freq, big.mark = ","), 
             position = position_identity())
-x.breaks <- c(0, ifelse(cumsum(tbl.p.m) < 0.1, 0.0, cumsum(tbl.p.m)))
-x.label <- format(x.breaks * 100, 
+x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
+x_label <- format(x_breaks * 100, 
                   digits = 3, 
                   nsmall = 1)
-y.breaks <- tbl.p.df$y.breaks
-delta <- (max(y.breaks) - min(y.breaks)) / 20
-y.breaks.sort <- sort(y.breaks)
-diff(y.breaks.sort) < delta 
-index <- which(diff(y.breaks.sort)  > delta)
-y.breaks <- c(0, y.breaks.sort[c(index, length(y.breaks.sort))])
-y.label <- format(y.breaks * 100,
+y_breaks <- tbl_p_df$y_breaks
+delta <- (max(y_breaks) - min(y_breaks)) / 20
+y_breaks_sort <- sort(y_breaks)
+diff(y_breaks_sort) < delta 
+index <- which(diff(y_breaks_sort)  > delta)
+y_breaks <- c(0, y_breaks_sort[c(index, length(y_breaks_sort))])
+y_label <- format(y_breaks * 100,
                   digits = 2,
                   nsmall = 1)
 m5 <- m4 + 
   scale_x_continuous(name = xlab, 
-                     breaks = x.breaks, 
-                     label = x.label) + 
+                     breaks = x_breaks, 
+                     label = x_label) + 
   scale_y_continuous(name = ylab,
-                     breaks = y.breaks,
-                     label = y.label) + 
-  scale_fill_manual(name = fill.name, 
+                     breaks = y_breaks,
+                     label = y_label) + 
+  scale_fill_manual(name = fill_name, 
                     values = rainbow(N)[N:1], 
-                    labels = tbl.df[[1]], 
+                    labels = tbl_df[[1]], 
                     guide = guide_legend()) +
   ggtitle(ggtitle) +
   theme(plot.margin = unit(c(1, 2, 1, 1), "lines"))
@@ -982,16 +975,16 @@ dump(list = "mosaic_gg", file = "./mosaic_gg.R")
 <P style = "page-break-before:always">
 -->
 
-```{r, message = FALSE, fig.width = 6, fig.height = 4.5}
+```{r, message = FALSE, fig.width = 6, fig_height = 4.5}
 source("./mosaic_gg.R")
-m5.seoul <- mosaic_gg(vote.seoul.class, 
+m5_seoul <- mosaic_gg(vote_seoul_class, 
                       base_family = "HCR Dotum LVT", 
                       ggtitle = "서울의 찬반", 
                       xlab = "계급", 
                       ylab = "찬반", 
-                      fill.name = "찬반")
-m5.seoul
-ggsave("../pics/sejong_seoul_mosaic_ggplot.png", m5.seoul, width = 6, height = 4.5, dpi = 72)
+                      fill_name = "찬반")
+m5_seoul
+ggsave("../pics/sejong_seoul_mosaic_ggplot.png", m5_seoul, width = 6, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
@@ -999,9 +992,9 @@ ggsave("../pics/sejong_seoul_mosaic_ggplot.png", m5.seoul, width = 6, height = 4
 ## 지역별 관료들의 찬반(서울 제외)
 
 ```{r, local bureaus}
-kable(vote.region.bureaus[, -1], 
+kable(vote_region_bureaus[, -1], 
       caption = "지역별 관료들의 찬반(서울 제외)")
-kable(format(prop.table(vote.region.bureaus[, -1], 
+kable(format(prop.table(vote_region_bureaus[, -1], 
                         margin = 2)*100, 
              digits = 1, 
              nsmall = 1), 
@@ -1013,15 +1006,15 @@ kable(format(prop.table(vote.region.bureaus[, -1],
 
 ### 막대그래프
 
-```{r, geom_bar for regional bureaus, fig.width = 9, fig.height = 4.5}
-vote.region.bureaus.df <- as.data.frame(vote.region.bureaus[, -1])
-barplot.gg(vote.region.bureaus.df, 
+```{r, geom_bar for regional bureaus, fig.width = 9, fig_height = 4.5}
+vote_region_bureaus.df <- as.data.frame(vote_region_bureaus[, -1])
+barplot_gg(vote_region_bureaus.df, 
            position = "stack", 
            base_family = "HCR Dotum LVT", 
            ggtitle = "지방 관료들의 찬반", 
            xlab = "지역", 
            ylab = "집계", 
-           fill.name = "찬반")
+           fill_name = "찬반")
 ggsave("../pics/sejong_bureaus_barplot_stack_ggplot.png", width = 9, height = 4.5, dpi = 72)
 ```
 
@@ -1029,15 +1022,15 @@ ggsave("../pics/sejong_bureaus_barplot_stack_ggplot.png", width = 9, height = 4.
 
 ### mosaic plot
 
-```{r, mosaic plot for region ggplot, fig.width = 9, fig.height = 4.5}
-m5.bureaus <- mosaic_gg(vote.region.bureaus[, -1], 
+```{r, mosaic plot for region ggplot, fig.width = 9, fig_height = 4.5}
+m5_bureaus <- mosaic_gg(vote_region_bureaus[, -1], 
                         base_family = "HCR Dotum LVT", 
                         ggtitle = "지방관료의 찬반", 
                         xlab = "지역별 관료들의 비중(누적 %)", 
                         ylab = "찬반(%)", 
-                        fill.name = "찬반")
-m5.bureaus
-ggsave("../pics/sejong_bureaus_mosaic_ggplot.png", m5.bureaus, width = 9, height = 4.5, dpi = 72)
+                        fill_name = "찬반")
+m5_bureaus
+ggsave("../pics/sejong_bureaus_mosaic_ggplot.png", m5_bureaus, width = 9, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
@@ -1046,15 +1039,15 @@ ggsave("../pics/sejong_bureaus_mosaic_ggplot.png", m5.bureaus, width = 9, height
 
 ### 막대그래프
 
-```{r, geom_bar for commons, fig.width = 10, fig.height = 4.5}
-vote.region.commons.df <- as.data.frame(vote.region.commons)
-barplot.gg(vote.region.commons.df, 
+```{r, geom_bar for commons, fig.width = 10, fig_height = 4.5}
+vote_region_commons_df <- as.data.frame(vote_region_commons)
+barplot_gg(vote_region_commons_df, 
            position = "stack", 
            base_family = "HCR Dotum LVT", 
            ggtitle = "품관촌민의 찬반", 
            xlab = "지역", 
            ylab = "집계", 
-           fill.name = "찬반")
+           fill_name = "찬반")
 ggsave("../pics/sejong_commons_barplot_stack_ggplot.png", width = 9, height = 4.5, dpi = 72)
 ```
 
@@ -1062,15 +1055,15 @@ ggsave("../pics/sejong_commons_barplot_stack_ggplot.png", width = 9, height = 4.
 
 ### mosaic plot
 
-```{r, mosaic plot for commons ggplot, fig.width = 12, fig.height = 4.5}
-m5.commons <- mosaic_gg(vote.region.commons, 
+```{r, mosaic plot for commons ggplot, fig.width = 12, fig_height = 4.5}
+m5_commons <- mosaic_gg(vote_region_commons, 
                         base_family = "HCR Dotum LVT", 
                         ggtitle = "품관촌민의 찬반", 
                         xlab = "지역별 품관촌민의 비중(누적%)", 
                         ylab = "찬반(%)", 
-                        fill.name = "찬반")
-m5.commons
-ggsave("../pics/sejong_commons_mosaic_ggplot.png", m5.commons, width = 12, height = 4.5, dpi = 72)
+                        fill_name = "찬반")
+m5_commons
+ggsave("../pics/sejong_commons_mosaic_ggplot.png", m5_commons, width = 12, height = 4.5, dpi = 72)
 ```
 
 <P style = "page-break-before:always">
@@ -1080,11 +1073,11 @@ ggsave("../pics/sejong_commons_mosaic_ggplot.png", m5.commons, width = 12, heigh
 관료들의 찬반과 품관촌민의 찬반이 다른 곳.
 
 ```{r, chungcheong}
-kable(format(vote.chung.class, 
+kable(format(vote_chung_class, 
              big.mark = ","), 
       caption = "충청도 사례", 
       align = "r")
-kable(format(prop.table(vote.chung.class, 
+kable(format(prop.table(vote_chung_class, 
                         margin = 2)*100, 
              digits = 3, nsmall = 1), 
       caption = "충청도 사례", 
@@ -1093,15 +1086,15 @@ kable(format(prop.table(vote.chung.class,
 
 ### 막대그래프
 
-```{r, geom_bar fill for Chungcheong, fig.width = 6, fig.height = 4.5}
-vote.chung.class.df <- as.data.frame(vote.chung.class)
-barplot.gg(vote.chung.class.df, 
+```{r, geom_bar fill for Chungcheong, fig.width = 6, fig_height = 4.5}
+vote_chung_class_df <- as.data.frame(vote_chung_class)
+barplot_gg(vote_chung_class_df, 
            position = "fill", 
            base_family = "HCR Dotum LVT", 
            ggtitle = "충청도의 찬반", 
            xlab = "계급", 
            ylab = "집계(%)", 
-           fill.name = "찬반")
+           fill_name = "찬반")
 ggsave("../pics/sejong_chungcheong_barplot_fill_ggplot.png", width = 6, height = 4.5, dpi = 72)
 ```
 
@@ -1109,15 +1102,15 @@ ggsave("../pics/sejong_chungcheong_barplot_fill_ggplot.png", width = 6, height =
 
 ### mosaic plot
 
-```{r, mosaic plot for chungcheong ggplot, fig.width = 12, fig.height = 4.5}
-m5.chungcheong <- mosaic_gg(vote.chung.class[, -1], 
+```{r, mosaic plot for chungcheong ggplot, fig.width = 12, fig_height = 4.5}
+m5_chungcheong <- mosaic_gg(vote_chung_class[, -1], 
                             base_family = "HCR Dotum LVT", 
                             ggtitle = "충청도의 찬반", 
                             xlab = "계급(누적%)", 
                             ylab = "찬반(%)", 
-                            fill.name = "찬반")
-m5.chungcheong
-ggsave("../pics/sejong_chungcheong_mosaic_ggplot.png", m5.chungcheong, width = 12, height = 4.5, dpi = 72)
+                            fill_name = "찬반")
+m5_chungcheong
+ggsave("../pics/sejong_chungcheong_mosaic_ggplot.png", m5_chungcheong, width = 12, height = 4.5, dpi = 72)
 ```
 
 ## 자료 정리
