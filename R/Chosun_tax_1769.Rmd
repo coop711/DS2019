@@ -3,11 +3,17 @@ title: "Chosun Tax : Province"
 output: html_document
 ---
 
+```{r, echo = FALSE}
+options(warn = -1)
+library(knitr)
+library(magrittr)
+```
+
 ## Problem
 
 1769년(영조 45년) 도별 수조 현황표를 막대그래프로 표시
 
-![](../pics/chosun_tax_history.png)
+`r include_graphics("../pics/chosun_tax_history.png", dpi = 300)`
 
 <P style = "page-break-before:always">
 
@@ -19,7 +25,7 @@ expected <- c(9939, 35476, 69692, 60399, 3229, 29883, 5167, 31996)
 collected <- c(8620, 31657, 67277, 25283, 3532, 27265, 0, 0)
 tax_df <- data.frame(province, expected, collected, stringsAsFactors = FALSE)
 tax_df
-str(tax_df)
+tax_df %>% str
 ```
 
 <P style = "page-break-before:always">
@@ -28,8 +34,11 @@ str(tax_df)
 
 ```{r, fig.width = 12, fig.height = 6}
 par(family = "HCR Dotum LVT")
-b1 <- barplot(t(as.matrix(tax_df[, 2:3])), 
-        axes = FALSE, ylim = c(0, 80000), beside = TRUE, names.arg = tax_df[, 1], 
+b1 <- tax_df %>%
+  `[`(2:3) %>%
+  as.matrix %>%
+  t %>%
+  barplot(axes = FALSE, ylim = c(0, 80000), beside = TRUE, names.arg = tax_df[, 1], 
         legend.text = c("징수액", "상납액"), col = c("darkgrey", "blue"))
 # axis(side = 2, 
 #     at = as.vector(as.matrix(rates.df[, 2:3])), 
