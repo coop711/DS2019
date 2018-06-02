@@ -12,14 +12,14 @@ tbl_p <- prop.table(tbl)
 tbl_p_2 <- prop.table(tbl, margin = 2)
 tbl_p_df <- as.data.frame(tbl_p)
 tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))]
-tbl_p_df$height <- as.data.frame(tbl_p_2)$Freq
+tbl_p_df$height <- as.data.frame(tbl_p_2)[, 3]
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], cumsum))
 x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
 # x_center <- (cumsum(tbl_p_m) + c(0, head(cumsum(tbl_p_m), -1)))/2
 tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
 m1 <- ggplot(tbl_p_df, aes(x = center, y = height, width = width)) + 
-  geom_bar(aes(fill = tbl_df[1]), 
+  geom_bar(aes(fill = tbl_df[, 1]), 
            stat = "identity", 
            col = "white", 
            size = 1, 
@@ -56,7 +56,7 @@ m5 <- m4 +
                      label = y_label) + 
   scale_fill_manual(name = fill_name, 
                     values = rainbow(N)[N:1], 
-                    labels = tbl_df[[1]], 
+                    labels = tbl_df[, 1], 
                     guide = guide_legend()) +
   ggtitle(ggtitle) +
   theme(plot.margin = unit(c(1, 2, 1, 1), "lines"))

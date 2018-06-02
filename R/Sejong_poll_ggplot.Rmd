@@ -77,7 +77,8 @@ vote_df %>% str
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-p1 <- ggplot(data = vote_df, mapping = aes(x = "", y = Freq, fill = vote)) 
+# p1 <- ggplot(data = vote_df, mapping = aes(x = "", y = Freq, fill = vote))
+p1 <- ggplot(data = vote_df, mapping = aes(x = "", y = vote_df[, 2], fill = vote_df[, 1])) 
 p2 <- p1 + 
   geom_bar(width = 1, stat = "identity", 
            position = position_stack(reverse = TRUE))
@@ -95,8 +96,8 @@ p3_2 <- p2_2 +
 p3_2
 p4_2 <- p3_2 + 
   scale_x_discrete(name = "찬반") +
-  scale_y_continuous(name = "집계", breaks = vote_df$Freq, 
-                     labels = format(vote_df$Freq, big.mark = ","))
+  scale_y_continuous(name = "집계", breaks = vote_df[, 2], 
+                     labels = format(vote_df[, 2], big.mark = ","))
 p4_2
 ```
 
@@ -109,8 +110,8 @@ p5_2 <- p4_2 +
                     labels = vote_df$vote)
 p5_2
 p6_2 <- p5_2 +
-  geom_text(aes(y = vote_df$Freq / 2), 
-            label = format(rev(vote_df$Freq), big.mark = ","), 
+  geom_text(aes(y = vote_df[, 2] / 2), 
+            label = format(rev(vote_df[, 2]), big.mark = ","), 
 #            family = "HCR Dotum LVT", 
             position = position_dodge(width = 1))
 p6_2
@@ -124,7 +125,7 @@ p7_2 <- p6_2 +
 p7_2
 p8_2 <- p5_2 +
   guides(fill = "none") +
-  geom_text(aes(y = vote_df$Freq/2),
+  geom_text(aes(y = vote_df[, 2] / 2),
             family = "HCR Dotum LVT", 
             label = rev(pie_label),
             position = position_dodge(width = 1))
@@ -141,8 +142,8 @@ p3
 p4 <- p3 + 
   scale_x_discrete(name = "찬반") +
   scale_y_continuous(name = "집계", 
-                     breaks = cumsum(vote_df$Freq), 
-                     labels = format(cumsum(vote_df$Freq), big.mark = ","))
+                     breaks = cumsum(vote_df[, 2]), 
+                     labels = format(cumsum(vote_df[, 2]), big.mark = ","))
 p4
 ```
 
@@ -151,11 +152,11 @@ p4
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
 p5 <- p4 +
   scale_fill_manual(name = "찬반", 
-                    values = rainbow(2)[2:1], labels = vote_df$vote)
+                    values = rainbow(2)[2:1], labels = vote_df[, 1])
 p5
 p6 <- p5 + 
   geom_text(aes(y = y_coord), 
-            label = format(vote_df$Freq, big.mark = ","), 
+            label = format(vote_df[, 2], big.mark = ","), 
 #            family = "HCR Dotum LVT", 
             position = position_identity())  
 p6
@@ -234,14 +235,14 @@ ggsave("../pics/sejong_total_pie_ggplot.png", pie_total_7, dpi = 72)
 #### `pie_gg()`
 
 ```{r, pie_gg}
-pie_gg <- function(df, ggtitle = "", font.family = ""){
+pie_gg <- function(df, ggtitle = "", font_family = ""){
   n <- length(names(df))
-  y_coord <- df$Freq / 2 + c(0, cumsum(head(df$Freq, -1)))
-  pie_label <- paste(levels(df$vote), format(df$Freq, big.mark = ","), 
+  y_coord <- df[, 2] / 2 + c(0, cumsum(head(df[, 2], -1)))
+  pie_label <- paste(levels(df[, 1]), format(df[, 2], big.mark = ","), 
                      sep = "\n") 
   p1 <- ggplot(df, aes(x = "", 
-                       y = Freq, 
-                       fill = vote)) 
+                       y = df[, 2], 
+                       fill = df[, 1])) 
   p2 <- p1 + 
     geom_bar(width = 1, 
              stat = "identity", 
@@ -258,13 +259,13 @@ pie_gg <- function(df, ggtitle = "", font.family = ""){
     scale_fill_manual(name = "", 
                       values = rainbow(n)[n:1])
   pie_4 <- pie_3 +
-    theme_void(base_family = font.family)
+    theme_void(base_family = font_family)
   pie_5 <- pie_4 +
     guides(fill = "none")
   pie_6 <- pie_5 +
     geom_text(aes(y = y_coord), 
               label = pie_label, 
-              family = font.family, 
+              family = font_family, 
               position = position_identity())
   pie_7 <- pie_6 +
     ggtitle(ggtitle) + 
@@ -281,7 +282,7 @@ dump("pie_gg",
 ```{r, message = FALSE, fig.width = 4, fig_height = 4}
 pie_gg(vote_df, 
        ggtitle = "전체 찬반", 
-       font.family = "HCR Dotum LVT")
+       font_family = "HCR Dotum LVT")
 ```
 
 <P style = "page-break-before:always">
@@ -369,10 +370,10 @@ kable(format(vote_commons_df,
 ```{r, coord_polar_2, message = FALSE, fig.width = 8, fig_height = 4}
 pie_bureaus <- pie_gg(vote_bureaus_df, 
                       ggtitle = "관료의 찬반", 
-                      font.family = "HCR Dotum LVT")
+                      font_family = "HCR Dotum LVT")
 pie_commons <- pie_gg(vote_commons_df, 
                       ggtitle = "품관촌민의 찬반", 
-                      font.family = "HCR Dotum LVT")
+                      font_family = "HCR Dotum LVT")
 pies_grid <- grid.arrange(pie_bureaus, 
                           pie_commons, 
                           ncol = 2, 
@@ -387,37 +388,21 @@ ggsave("../pics/sejong_bureaus_commons_pie_ggplot.png", pies_grid, width = 8, he
 ### 관료와 품관촌민
 
 ```{r, by region}
-kable(vote_region_bureaus, 
-      caption = "관료들의 지역별 찬반")
-kable(format(prop.table(vote_region_bureaus, 
-                        margin = 2) * 100, 
-             digits = 3, 
-             nsmall = 1), 
-      align = rep("r", 9), 
-      caption = "관료들의 지역별 찬반(%)")
-kable(format(vote_region_commons, 
-             big.mark = ","), 
-      align = rep("r", 9), 
-      caption = "품관촌민들의 지역별 찬반")
-kable(format(prop.table(vote_region_commons, 
-                        margin = 2) * 100, 
-             digits = 1, 
-             nsmall = 1), 
-      align = rep("r", 9), 
-      caption = "품관촌민들의 지역별 찬반(%)")
+kable(vote_region_bureaus, caption = "관료들의 지역별 찬반")
+kable(format(prop.table(vote_region_bureaus, margin = 2) * 100, digits = 3, nsmall = 1), 
+      align = rep("r", 9), caption = "관료들의 지역별 찬반(%)")
+kable(format(vote_region_commons, big.mark = ","), 
+      align = "r", caption = "품관촌민들의 지역별 찬반")
+kable(format(prop.table(vote_region_commons, margin = 2) * 100, digits = 1, nsmall = 1), 
+      align = "r", caption = "품관촌민들의 지역별 찬반(%)")
 ```
 
 ## 서울의 찬반
 
 ```{r, Seoul}
-kable(vote_seoul_class, 
-      caption = "서울의 찬반")
-kable(format(prop.table(vote_seoul_class, 
-                        margin = 2) * 100, 
-             digits = 1, 
-             nsmall = 1), 
-      align = rep("r", 3), 
-      caption = "서울의 찬반(%)")
+kable(vote_seoul_class, caption = "서울의 찬반")
+kable(format(prop.table(vote_seoul_class, margin = 2) * 100, digits = 1, nsmall = 1), 
+      align = "r", caption = "서울의 찬반(%)")
 ```
 
 <P style = "page-break-before:always">
@@ -430,18 +415,18 @@ kable(format(prop.table(vote_seoul_class,
 vote_seoul_df <- as.data.frame(vote_seoul_class)
 n_fill <- length(levels(vote_seoul_df[, 1]))
 x_stack <- vote_seoul_df[, 2]
-y_stack <- unlist(tapply(vote_seoul_df$Freq, 
-                         vote_seoul_df$class, 
+y_stack <- unlist(tapply(vote_seoul_df[, 3], 
+                         vote_seoul_df[, 2], 
                          function(x){x / 2 + 
                              c(0, cumsum(head(x, -1)))}))
-y_breaks <- unlist(tapply(vote_seoul_df$Freq, 
-                         vote_seoul_df$class, 
+y_breaks <- unlist(tapply(vote_seoul_df[, 3], 
+                         vote_seoul_df[, 2], 
                          cumsum))
 y_label <- format(y_breaks, big.mark = ",")
 b1_seoul <- ggplot(vote_seoul_df, 
                    aes(x = x_stack, 
-                       y = Freq, 
-                       fill = vote)) +
+                       y = vote_seoul_df[, 3], 
+                       fill = vote_seoul_df[, 1])) +
   geom_bar(stat = "identity", 
            position = position_stack(reverse = TRUE))
 b1_seoul
@@ -454,7 +439,7 @@ b2_seoul <- b1_seoul +
                      labels = y_label) +
   scale_fill_manual(name = "찬반", 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = vote_seoul_df$vote)
+                    labels = vote_seoul_df[, 1])
 b2_seoul  
 ```
 
@@ -464,7 +449,7 @@ b2_seoul
 b3_seoul <- b2_seoul +
 # geom_text(aes(y = y_stack/2), label = vote_seoul_df$Freq)
   geom_text(aes(y = y_stack), 
-            label = vote_seoul_df$Freq, 
+            label = vote_seoul_df[, 3], 
             position = "identity")
 b3_seoul
 ggsave("../pics/sejong_seoul_barplot_stack_ggplot.png", b3_seoul, width = 6, height = 4.5, dpi = 72)
@@ -478,8 +463,8 @@ ggsave("../pics/sejong_seoul_barplot_stack_ggplot.png", b3_seoul, width = 6, hei
 n_fill <- length(levels(vote_seoul_df[, 1]))
 b1_seoul_dodge <- ggplot(vote_seoul_df, 
                          aes(x = x_stack, 
-                             y = Freq, 
-                             fill = vote)) +
+                             y = vote_seoul_df[, 3], 
+                             fill = vote_seoul_df[, 1])) +
   geom_bar(stat = "identity", position = "dodge")
 b1_seoul_dodge
 ```
@@ -492,11 +477,11 @@ b2_seoul_dodge <- b1_seoul_dodge +
   theme_kr +
   scale_x_discrete(name = "계급") +
   scale_y_continuous(name = "집계", 
-                     breaks = vote_seoul_df$Freq, 
-                     labels = vote_seoul_df$Freq) +
+                     breaks = vote_seoul_df[, 3], 
+                     labels = vote_seoul_df[, 3]) +
   scale_fill_manual(name = "찬반", 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = vote_seoul_df$vote)
+                    labels = vote_seoul_df[, 1])
 b2_seoul_dodge  
 ```
 
@@ -505,11 +490,11 @@ b2_seoul_dodge
 ```{r, fig.width = 6, fig_height = 4.5}
 #  N <- nrow(vote_seoul_df)
 #  index <- as.vector(matrix(1:N, nrow = 2)[2:1, ])
-y_label <- unlist(tapply(vote_seoul_df$Freq, 
-                                 vote_seoul_df$class,
+y_label <- unlist(tapply(vote_seoul_df[, 3], 
+                                 vote_seoul_df[, 2],
                                  rev))
 b3_seoul_dodge <- b2_seoul_dodge +
-  geom_text(aes(y = vote_seoul_df$Freq/2), 
+  geom_text(aes(y = vote_seoul_df[, 3] / 2), 
 #            label = vote_seoul_df[index, "Freq"], 
             label = y_label,
             position = position_dodge(width = 0.9)) +
@@ -524,16 +509,16 @@ b3_seoul_dodge
 
 ```{r, seoul geom_bar fill, fig.width = 6, fig_height = 4.5}
 n_fill <- length(levels(vote_seoul_df[, 1]))
-y_fill <- unlist(tapply(vote_seoul_df$Freq, 
+y_fill <- unlist(tapply(vote_seoul_df[, 3], 
                         x_stack, 
-                        function(x){cumsum(x)/sum(x)}))
-p_fill <- unlist(tapply(vote_seoul_df$Freq, 
+                        function(x){cumsum(x) / sum(x)}))
+p_fill <- unlist(tapply(vote_seoul_df[, 3], 
                         x_stack, 
                         function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
 b1_seoul_fill <- ggplot(vote_seoul_df, 
                         aes(x = x_stack, 
-                            y = Freq, 
-                            fill = vote)) +
+                            y = vote_seoul_df[, 3], 
+                            fill = vote_seoul_df[, 1])) +
   geom_bar(stat = "identity", 
            position = position_fill(reverse = TRUE))
 b1_seoul_fill
@@ -553,7 +538,7 @@ b2_seoul_fill <- b1_seoul_fill +
                                      nsmall = 1)) +
   scale_fill_manual(name = "찬반", 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = vote_seoul_df$vote)
+                    labels = vote_seoul_df[, 1])
 b2_seoul_fill  
 ```
 
@@ -562,7 +547,7 @@ b2_seoul_fill
 ```{r, fig.width = 6, fig_height = 4.5}
 b3_seoul_fill <- b2_seoul_fill +
   geom_text(aes(y = p_fill), 
-            label = vote_seoul_df$Freq, 
+            label = vote_seoul_df[, 3], 
             position = "identity") +
   ggtitle("서울의 찬반")
 b3_seoul_fill
@@ -584,10 +569,10 @@ barplot_gg_stack <- function(df,
                              fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y <- unlist(tapply(df$Freq, 
+y <- unlist(tapply(df[, 3], 
                    x, 
                    function(x){x / 2 + c(0, cumsum(head(x, -1)))}))
-y_breaks <- unlist(tapply(df$Freq, 
+y_breaks <- unlist(tapply(df[, 3], 
                          x, 
                          cumsum))
 y_label <- format(y_breaks, big.mark = ",")
@@ -599,8 +584,8 @@ y_breaks <- c(0, y_breaks_sort[c(index, length(y_breaks_sort))])
 y_label <- format(y_breaks, big.mark = ",")
 b1 <- ggplot(df, 
              aes(x = x, 
-                 y = Freq, 
-                 fill = vote)) +
+                 y = df[, 3], 
+                 fill = df[, 1])) +
   geom_bar(stat = "identity", 
            position = position_stack(reverse = TRUE))
 b2 <- b1 +
@@ -612,11 +597,11 @@ b2 <- b1 +
                      labels = y_label) +
   scale_fill_manual(name = fill_name, 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = df$vote, 
+                    labels = df[, 1], 
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = y), 
-            label = format(df$Freq, 
+            label = format(df[, 3], 
                            big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
@@ -637,11 +622,11 @@ barplot_gg_dodge <- function(df,
                              fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y_dodge <- df$Freq
+y_dodge <- df[, 3]
 b1 <- ggplot(df, 
              aes(x = x, 
-                 y = Freq, 
-                 fill = vote)) +
+                 y = df[, 3], 
+                 fill = df[, 1])) +
   geom_bar(stat = "identity", 
            position = "dodge")
 b2 <- b1 +
@@ -653,14 +638,14 @@ b2 <- b1 +
                      labels = format(y_dodge, big.mark = ",")) +
   scale_fill_manual(name = fill_name, 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = df$vote)
+                    labels = df[, 1])
 #  N <- nrow(df)
 #  index <- as.vector(matrix(1:N, nrow = 2)[2:1, ])
-y_label <- unlist(tapply(df$Freq, 
+y_label <- unlist(tapply(df[, 3], 
                          df[, 2],
                          rev))
 b3 <- b2 +
-  geom_text(aes(y = y_dodge/2), 
+  geom_text(aes(y = y_dodge / 2), 
 #            label = format(df[index, "Freq"], big.mark = ","), 
             label = y_label,
             position = position_dodge(width = 0.9)) +
@@ -682,16 +667,16 @@ barplot_gg_fill <- function(df,
                             fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y_fill <- unlist(tapply(df$Freq, 
+y_fill <- unlist(tapply(df[, 3], 
                    x, 
-                   function(x){cumsum(x)/sum(x)}))
-p_fill <- unlist(tapply(df$Freq, 
+                   function(x){cumsum(x) / sum(x)}))
+p_fill <- unlist(tapply(df[, 3], 
                         x, 
                         function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
 b1 <- ggplot(df, 
              aes(x = x, 
-                 y = Freq, 
-                 fill = vote)) +
+                 y = df[, 3], 
+                 fill = df[, 1])) +
   geom_bar(stat = "identity", 
            position = position_fill(reverse = TRUE))
 b2 <- b1 +
@@ -705,11 +690,11 @@ b2 <- b1 +
                                      nsmall = 1)) +
   scale_fill_manual(name = fill_name, 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = df$vote, 
+                    labels = df[, 1], 
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = p_fill), 
-            label = format(df$Freq, big.mark = ","), 
+            label = format(df[, 3], big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
 return(b3)
@@ -798,27 +783,40 @@ dump(c("barplot_gg","barplot_gg_stack", "barplot_gg_dodge", "barplot_gg_fill"),
 #### Data
 
 ```{r, message = FALSE}
-vote_seoul_class_df <- as.data.frame(vote_seoul_class)
-vote_seoul_class_sum <- tapply(vote_seoul_class_df$Freq, 
-                               vote_seoul_class_df[, 2], 
-                               sum)
-vote_seoul_class_p_m <- prop.table(vote_seoul_class_sum)
-vote_seoul_class_p <- prop.table(vote_seoul_class)
-vote_seoul_class_p_2 <- prop.table(vote_seoul_class, 
-                                   margin = 2)
-vote_seoul_class_p_df <- as.data.frame(vote_seoul_class_p)
-vote_seoul_class_p_df$width <- vote_seoul_class_p_m[match(vote_seoul_class_p_df$class, 
+vote_seoul_class_df <- vote_seoul_class %>%
+  as.data.frame
+vote_seoul_class_p_df <- vote_seoul_class %>%
+  prop.table %>%
+  as.data.frame
+vote_seoul_class_p_m <- vote_seoul_class_df %>%
+  `[`(, 3) %>%
+  tapply(vote_seoul_class_df[, 2], sum) %>%
+  prop.table
+# vote_seoul_class_df <- as.data.frame(vote_seoul_class)
+# vote_seoul_class_sum <- tapply(vote_seoul_class_df[, 3], 
+#                                vote_seoul_class_df[, 2], 
+#                                sum)
+# vote_seoul_class_p_m <- prop.table(vote_seoul_class_sum)
+# vote_seoul_class_p <- prop.table(vote_seoul_class)
+# vote_seoul_class_p_2 <- prop.table(vote_seoul_class, 
+#                                    margin = 2)
+# vote_seoul_class_p_df <- as.data.frame(vote_seoul_class_p)
+vote_seoul_class_p_df$width <- vote_seoul_class_p_m[match(vote_seoul_class_p_df[, 2], 
                                                           names(vote_seoul_class_p_m))]
-vote_seoul_class_p_2_df <- as.data.frame(vote_seoul_class_p_2)
-vote_seoul_class_p_df$height <- vote_seoul_class_p_2_df$Freq
-vote_seoul_class_p_df$label_height <- unlist(tapply(vote_seoul_class_p_df$height, vote_seoul_class_p_df$class, function(x) x / 2 + c(0, cumsum(head(x, -1)))))
+# vote_seoul_class_p_2_df <- as.data.frame(vote_seoul_class_p_2)
+vote_seoul_class_p_df$height <- vote_seoul_class %>%
+  prop.table(margin = 2) %>%
+  as.data.frame %>%
+  `[`(, 3)
+# vote_seoul_class_p_df$height <- vote_seoul_class_p_2_df[, 3]
+vote_seoul_class_p_df$label_height <- unlist(tapply(vote_seoul_class_p_df$height, vote_seoul_class_p_df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
 vote_seoul_class_p_df$y_breaks <- unlist(tapply(vote_seoul_class_p_df$height,
-                                                    vote_seoul_class_p_df$class, 
-                                                    cumsum))
+                                                vote_seoul_class_p_df[, 2], 
+                                                cumsum))
 x_center <- vote_seoul_class_p_m / 2 + c(0, cumsum(head(vote_seoul_class_p_m, -1)))
 # x_center <- (cumsum(vote_seoul_class_p_m) + 
 #               c(0, head(cumsum(vote_seoul_class_p_m), -1)))/2
-vote_seoul_class_p_df$center <- x_center[match(vote_seoul_class_p_df$class, 
+vote_seoul_class_p_df$center <- x_center[match(vote_seoul_class_p_df[, 2], 
                                                names(x_center))]
 ```
 
@@ -829,7 +827,7 @@ m1 <- ggplot(vote_seoul_class_p_df,
              aes(x = center, 
                  y = height, 
                  width = width)) + 
-  geom_bar(aes(fill = vote), 
+  geom_bar(aes(fill = vote_seoul_class_p_df[, 1]), 
            stat = "identity", 
            col = "white", 
            size = 2, 
@@ -851,7 +849,7 @@ m2
 m3 <- m2 + 
   geom_text(aes(x = center, 
                 y = 1.05), 
-            label = vote_seoul_class_p_df$class, 
+            label = vote_seoul_class_p_df[, 2], 
             family = "HCR Dotum LVT")
 m3
 ```
@@ -862,7 +860,7 @@ m3
 m4 <- m3 + 
   geom_text(aes(x = center, 
                 y = label_height), 
-            label = format(vote_seoul_class_df$Freq, 
+            label = format(vote_seoul_class_df[, 3], 
                            big.mark = ","), 
             position = position_identity())
 m4
@@ -892,7 +890,7 @@ m5 <- m4 +
                      label = y_label) + 
   scale_fill_manual(name = "찬반", 
                     values = rainbow(2)[2:1], 
-                    labels = vote_seoul_df$vote, 
+                    labels = vote_seoul_df[, 1], 
                     guide = guide_legend()) +
   ggtitle("서울의 찬반")
 m5
@@ -918,14 +916,14 @@ tbl_p <- prop.table(tbl)
 tbl_p_2 <- prop.table(tbl, margin = 2)
 tbl_p_df <- as.data.frame(tbl_p)
 tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))]
-tbl_p_df$height <- as.data.frame(tbl_p_2)$Freq
+tbl_p_df$height <- as.data.frame(tbl_p_2)[, 3]
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], cumsum))
 x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
 # x_center <- (cumsum(tbl_p_m) + c(0, head(cumsum(tbl_p_m), -1)))/2
 tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
 m1 <- ggplot(tbl_p_df, aes(x = center, y = height, width = width)) + 
-  geom_bar(aes(fill = tbl_df[1]), 
+  geom_bar(aes(fill = tbl_df[, 1]), 
            stat = "identity", 
            col = "white", 
            size = 1, 
@@ -962,7 +960,7 @@ m5 <- m4 +
                      label = y_label) + 
   scale_fill_manual(name = fill_name, 
                     values = rainbow(N)[N:1], 
-                    labels = tbl_df[[1]], 
+                    labels = tbl_df[, 1], 
                     guide = guide_legend()) +
   ggtitle(ggtitle) +
   theme(plot.margin = unit(c(1, 2, 1, 1), "lines"))

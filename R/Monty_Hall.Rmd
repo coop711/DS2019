@@ -23,14 +23,22 @@ options(width = 180)
 ```{r}
 set.seed(41)
 monty_hall <- function() {
-  key <- sample(1:3, size = 1)
-  goat <- setdiff(1:3, key)
-  contestant <- sample(1:3, size = 1)
-  monty <- ifelse(contestant == key, sample(goat, size = 1), setdiff(goat, contestant))
-  switch <- setdiff(1:3, c(contestant, monty))
-  result <- ifelse(switch == key, "Switching wins", "Staying wins")
-  # result
-  c("Key" = key, "Contestant" = contestant, "Monty" = monty, "Switch" = switch, "Result" = result)
+  key <- 1:3 %>% sample(size = 1)
+  goat <- 1:3 %>% setdiff(key)
+  contestant <- 1:3 %>% sample(size = 1)
+  monty <- contestant %>%
+    `==` (key) %>%
+    ifelse(goat %>% sample(size = 1), 
+           goat %>% setdiff(contestant))
+  switch <- 1:3 %>% setdiff(c(contestant, monty))
+  result <- switch %>% 
+    `==`(key) %>%
+    ifelse("Switching wins", "Staying wins") 
+  c("Key" = key, 
+    "Contestant" = contestant, 
+    "Monty" = monty, 
+    "Switch" = switch, 
+    "Result" = result)
 }
 monty_hall()
 ```
@@ -39,9 +47,9 @@ monty_hall()
 
 ```{r}
 N <- 30
-monty_result <- replicate(N, monty_hall())
-t(monty_result)
-table(unlist(monty_result[5, ]))
+monty_result <- replicate(N, monty_hall()) %>% t
+monty_result)
+table(monty_result[5, ])
 sum(monty_result[5, ] == "Switching wins")/N
 cumsum(monty_result[5, ] == "Switching wins")
 cumsum(monty_result[5, ] == "Staying wins")
