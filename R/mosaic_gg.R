@@ -4,15 +4,21 @@ function(tbl, base_family = "",
                       xlab = "", 
                       ylab = "", 
                       fill_name = ""){
-tbl_df <- as.data.frame(tbl)
+tbl_df <- tbl %>%
+  as.data.frame
 N <- length(levels(tbl_df[, 1]))
-tbl_sum <- tapply(tbl_df$Freq, tbl_df[, 2], sum)
-tbl_p_m <- prop.table(tbl_sum)
-tbl_p <- prop.table(tbl)
-tbl_p_2 <- prop.table(tbl, margin = 2)
-tbl_p_df <- as.data.frame(tbl_p)
+tbl_p_df <- tbl %>%
+  prop.table %>%
+  as.data.frame
+tbl_p_m <- tbl_df %>%
+  `[`(, 3) %>%
+  tapply(tbl_df[, 2], sum) %>%
+  prop.table
 tbl_p_df$width <- tbl_p_m[match(tbl_p_df[, 2], names(tbl_p_m))]
-tbl_p_df$height <- as.data.frame(tbl_p_2)[, 3]
+tbl_p_df$height <- tbl %>%
+  prop.table(margin = 2) %>%
+  as.data.frame %>%
+  `[`(, 3)
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], cumsum))
 x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
@@ -32,7 +38,7 @@ m3 <- m2 +
             family = base_family)
 m4 <- m3 + 
   geom_text(aes(x = center, y = label_height), 
-            label = format(tbl_df$Freq, big.mark = ","), 
+            label = format(tbl_df[, 3], big.mark = ","), 
             position = position_identity())
 x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
 x_label <- format(x_breaks * 100, 

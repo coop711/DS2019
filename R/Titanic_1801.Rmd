@@ -107,6 +107,8 @@ text(x = b1_p %>% rep(times = 2),
        paste0("%"))
 legend("topleft", inset = 0.05, fill = rainbow(2), legend = c("사망", "생존"))
 title(main = "객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+dev.copy(png, "../pics/Titanic_barplot01.png", width = 840, height = 420)
+dev.off()
 ```
 
 ### Mosaic Plot
@@ -116,6 +118,8 @@ par(mfrow = c(1, 1), family = "HCR Dotum LVT")
 mosaicplot(t(Surv_Class), main = "객실 등급별 생존/사망",
            xlab = "객실 등급", ylab = "생존/사망",
            col = rainbow(2))
+dev.copy(png, "../pics/Titanic_mosaicplot01.png", width = 320, height = 320)
+dev.off()
 ```
 
 ## 성별 생존/사망
@@ -177,6 +181,8 @@ text(x = b2_p %>% rep(times = 2),
        paste0("%"))
 legend("topright", inset = 0.15, fill = rainbow(2), legend = c("사망", "생존"))
 title(main = "성별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+dev.copy(png, "../pics/Titanic_barplot02.png", width = 840, height = 420)
+dev.off()
 ```
 
 ### Mosaic Plot
@@ -186,6 +192,8 @@ par(mfrow = c(1, 1), family = "HCR Dotum LVT")
 mosaicplot(t(Surv_Sex), main = "성별 생존/사망", 
            xlab = "남/여", ylab = "생존/사망",
            col = rainbow(2))
+dev.copy(png, "../pics/Titanic_mosaicplot02.png", width = 320, height = 320)
+dev.off()
 ```
 
 ## 연령별 생존/사망
@@ -247,6 +255,8 @@ text(x = b3_p %>% rep(times = 2),
        paste0("%"))
 legend(x = 0.5, y = 0.95, fill = rainbow(2), legend = c("사망", "생존"))
 title(main = "연령별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+dev.copy(png, "../pics/Titanic_barplot03.png", width = 840, height = 420)
+dev.off()
 ```
 
 ### Mosaic Plot
@@ -256,6 +266,8 @@ par(mfrow = c(1, 1), family = "HCR Dotum LVT")
 mosaicplot(t(Surv_Age), main = "연령별 생존/사망",
            xlab = "어린이/어른", ylab = "생존/사망", 
            col = rainbow(2))
+dev.copy(png, "../pics/Titanic_mosaicplot03.png", width = 320, height = 320)
+dev.off()
 ```
 
 ## 어린이들의 객실 등급별 생존/사망 
@@ -316,6 +328,8 @@ text(x = b4_p %>% rep(times = 2),
        paste0("%"))
 legend("topright", inset = 0.05, fill = rainbow(2), legend = c("사망", "생존"))
 title(main = "어린이들의 객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+dev.copy(png, "../pics/Titanic_barplot04.png", width = 840, height = 420)
+dev.off()
 ```
 
 ### Mosaic Plot
@@ -325,6 +339,8 @@ par(mfrow = c(1, 1), family = "HCR Dotum LVT")
 mosaicplot(t(Child_Class), main = "어린이들의 객실 등급별 생존/사망",
            xlab = "객실 등급", ylab = "생존/사망", 
            col = rainbow(2))
+dev.copy(png, "../pics/Titanic_mosaicplot04.png", width = 320, height = 320)
+dev.off()
 ```
 
 ## 여성들의 등급별 생존/사망
@@ -385,6 +401,8 @@ text(x = b5_p %>% rep(times = 2),
        paste0("%"))
 legend("topright", inset = 0.05, fill = rainbow(2), legend = c("사망", "생존"))
 title(main = "여성들의 객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+dev.copy(png, "../pics/Titanic_barplot05.png", width = 840, height = 420)
+dev.off()
 ```
 
 ### Mosaic Plot
@@ -394,4 +412,13 @@ par(mfrow = c(1, 1), family = "HCR Dotum LVT")
 mosaicplot(t(Female_Class), 
            main = "여성들의 객실 등급별 생존/사망", xlab = "객실 등급", ylab = "생존/사망", 
            col = rainbow(2))
+dev.copy(png, "../pics/Titanic_mosaicplot05.png", width = 320, height = 320)
+dev.off()
 ```
+
+## Save
+
+```{r, echo = FALSE}
+save.image("./Titanic_1801.RData")
+```
+
