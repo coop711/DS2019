@@ -1,0 +1,98 @@
+---
+title: "Women and Children First!"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+타이타닉호의 침몰 과정에서 **여성과 어린이를 먼저 구한다**는 원칙은 지켜졌는가?
+
+## Data
+
+
+```{r}
+library(magrittr)
+library(knitr)
+library(pander)
+library(printr)
+library(ggplot2)
+load("Titanic_1801.RData")
+ls()
+```
+
+## Source User Defined Functions
+
+```{r}
+source("./barplot_gg.R")
+source("./mosaic_gg.R")
+source("./theme_kr.R")
+```
+
+## Data Manipulation
+
+```{r}
+Surv_Class %>% str
+Surv_Class %>% as.table %>% str
+Surv_Sex %>% str
+Surv_Sex %>% as.table %>% str
+Surv_Age %>% str
+Surv_Age %>% as.table %>% str
+Female_Class %>% str
+Child_Class %>% str
+```
+
+## Plots 
+
+```{r, fig.width = 8, fig.height= 6}
+mosaic_gg(as.table(Surv_Class)[2:1, ], 
+          ggtitle = "객실 등급별 생존/사망",
+          xlab = "객실 등급", 
+          fill_name = "생존?") + 
+  theme_kr + 
+  theme(plot.title = element_text(hjust = 0.5))
+ggsave("../pics/Titanic_mosaic_ggplot01.png", width = 8, height = 6, dpi = 72)
+```
+```{r, fig.width = 8, fig.height= 6}
+mosaic_gg(as.table(Surv_Sex)[2:1, ], 
+          ggtitle = "남녀별 생존/사망", 
+          xlab = "객실 등급", 
+          fill_name = "생존?") + 
+  theme_kr + 
+  theme(plot.title = element_text(hjust = 0.5))
+ggsave("../pics/Titanic_mosaic_ggplot02.png", width = 8, height = 6, dpi = 72)
+```
+
+
+```{r, fig.width = 8, fig.height= 6}
+mosaic_gg(as.table(Surv_Age)[2:1, ], 
+          ggtitle = "어린이/어른 생존/사망", 
+          xlab = "객실 등급", 
+          fill_name = "생존?") + 
+  theme_kr + 
+  theme(plot.title = element_text(hjust = 0.5))
+ggsave("../pics/Titanic_mosaic_ggplot03.png", width = 8, height = 6, dpi = 72)
+```
+
+
+```{r, fig.width = 8, fig.height= 6}
+mosaic_gg(as.table(Female_Class)[2:1, ], 
+          ggtitle = "객실 등급별 여성 생존/사망", 
+          xlab = "객실 등급", 
+          fill_name = "생존?") + 
+  theme_kr + 
+  theme(plot.title = element_text(hjust = 0.5))
+ggsave("../pics/Titanic_mosaic_ggplot04.png", width = 8, height = 6, dpi = 72)
+```
+
+
+```{r, fig.width = 8, fig.height= 6}
+mosaic_gg(as.table(Child_Class)[2:1, -4], 
+          ggtitle = "객실 등급별 어린이 생존/사망", 
+          xlab = "객실 등급", 
+          fill_name = "생존?") + 
+  theme_kr + 
+  theme(plot.title = element_text(hjust = 0.5)) 
+ggsave("../pics/Titanic_mosaic_ggplot05.png", width = 8, height = 6, dpi = 72)
+```
+
+

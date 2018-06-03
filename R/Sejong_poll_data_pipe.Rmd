@@ -13,10 +13,10 @@ Original data came from intenet version of Sejong silok, summarized by Oh, Ki-So
 
 ```{r, setup, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(pander)
+# library(pander)
 library(knitr)
 library(magrittr)
-library(printr)
+# library(printr)
 options(width = 180)
 ```
 
@@ -37,14 +37,14 @@ sejong_poll %>%
 ### Factor conversion
 
 We need vote, class, region as `factor`s. If you leave them as `chr`, it will be coerced to `factor` when you tabulate it according to alphabetical order, which is not what you want. 
-So, use `factor()` to convert them manually. 
+So, use `factor()` to convert them manually. `%<>%`의 활용법에 유의.
 
 ```{r}
 sejong_poll$vote %<>% 
   factor(levels = c("yes","no"), labels = c("Yes", "No"))
 ```
 
-You can check that `labels = ` is not necessary if same as levels. Continue with class and region_
+You can check that `labels = ` is not necessary if same as levels. Continue with `class` and `region`.
 
 ```{r}
 class_levels <- c("high","third.current", "third.ex", "chief", "ordinary")

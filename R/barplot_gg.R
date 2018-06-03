@@ -35,10 +35,10 @@ function(df,
                              fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y <- unlist(tapply(df$Freq, 
+y <- unlist(tapply(df[, 3], 
                    x, 
                    function(x){x / 2 + c(0, cumsum(head(x, -1)))}))
-y_breaks <- unlist(tapply(df$Freq, 
+y_breaks <- unlist(tapply(df[, 3], 
                          x, 
                          cumsum))
 y_label <- format(y_breaks, big.mark = ",")
@@ -50,8 +50,8 @@ y_breaks <- c(0, y_breaks_sort[c(index, length(y_breaks_sort))])
 y_label <- format(y_breaks, big.mark = ",")
 b1 <- ggplot(df, 
              aes(x = x, 
-                 y = Freq, 
-                 fill = vote)) +
+                 y = df[, 3], 
+                 fill = df[, 1])) +
   geom_bar(stat = "identity", 
            position = position_stack(reverse = TRUE))
 b2 <- b1 +
@@ -63,11 +63,11 @@ b2 <- b1 +
                      labels = y_label) +
   scale_fill_manual(name = fill_name, 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = df$vote, 
+                    labels = df[, 1], 
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = y), 
-            label = format(df$Freq, 
+            label = format(df[, 3], 
                            big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
@@ -82,11 +82,11 @@ function(df,
                              fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y_dodge <- df$Freq
+y_dodge <- df[, 3]
 b1 <- ggplot(df, 
              aes(x = x, 
-                 y = Freq, 
-                 fill = vote)) +
+                 y = df[, 3], 
+                 fill = df[, 1])) +
   geom_bar(stat = "identity", 
            position = "dodge")
 b2 <- b1 +
@@ -98,14 +98,14 @@ b2 <- b1 +
                      labels = format(y_dodge, big.mark = ",")) +
   scale_fill_manual(name = fill_name, 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = df$vote)
+                    labels = df[, 1])
 #  N <- nrow(df)
 #  index <- as.vector(matrix(1:N, nrow = 2)[2:1, ])
-y_label <- unlist(tapply(df$Freq, 
+y_label <- unlist(tapply(df[, 3], 
                          df[, 2],
                          rev))
 b3 <- b2 +
-  geom_text(aes(y = y_dodge/2), 
+  geom_text(aes(y = y_dodge / 2), 
 #            label = format(df[index, "Freq"], big.mark = ","), 
             label = y_label,
             position = position_dodge(width = 0.9)) +
@@ -121,16 +121,16 @@ function(df,
                             fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
-y_fill <- unlist(tapply(df$Freq, 
+y_fill <- unlist(tapply(df[, 3], 
                    x, 
-                   function(x){cumsum(x)/sum(x)}))
-p_fill <- unlist(tapply(df$Freq, 
+                   function(x){cumsum(x) / sum(x)}))
+p_fill <- unlist(tapply(df[, 3], 
                         x, 
                         function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
 b1 <- ggplot(df, 
              aes(x = x, 
-                 y = Freq, 
-                 fill = vote)) +
+                 y = df[, 3], 
+                 fill = df[, 1])) +
   geom_bar(stat = "identity", 
            position = position_fill(reverse = TRUE))
 b2 <- b1 +
@@ -144,11 +144,11 @@ b2 <- b1 +
                                      nsmall = 1)) +
   scale_fill_manual(name = fill_name, 
                     values = rainbow(n_fill)[n_fill:1], 
-                    labels = df$vote, 
+                    labels = df[, 1], 
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = p_fill), 
-            label = format(df$Freq, big.mark = ","), 
+            label = format(df[, 3], big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
 return(b3)
