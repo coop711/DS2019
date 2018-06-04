@@ -43,7 +43,24 @@ Child_Class %>% str
 
 ## Plots 
 
-```{r, fig.width = 8, fig.height= 6}
+### By Class
+
+```{r, fig.width = 8, fig.height = 6}
+barplot_gg_stack(as.data.frame(as.table(Surv_Class)[2:1, ]), 
+          ggtitle = "객실 등급별 생존/사망",
+          xlab = "객실 등급", 
+          fill_name = "생존?") + 
+  theme_kr + 
+  theme(plot.title = element_text(hjust = 0.5))
+barplot_gg_fill(as.data.frame(as.table(Surv_Class)[2:1, ]), 
+          ggtitle = "객실 등급별 생존/사망",
+          xlab = "객실 등급", 
+          fill_name = "생존?") + 
+  theme_kr + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r, fig.width = 8, fig.height = 6}
 mosaic_gg(as.table(Surv_Class)[2:1, ], 
           ggtitle = "객실 등급별 생존/사망",
           xlab = "객실 등급", 
@@ -52,6 +69,8 @@ mosaic_gg(as.table(Surv_Class)[2:1, ],
   theme(plot.title = element_text(hjust = 0.5))
 ggsave("../pics/Titanic_mosaic_ggplot01.png", width = 8, height = 6, dpi = 72)
 ```
+### By Sex
+
 ```{r, fig.width = 8, fig.height= 6}
 mosaic_gg(as.table(Surv_Sex)[2:1, ], 
           ggtitle = "남녀별 생존/사망", 
@@ -62,6 +81,7 @@ mosaic_gg(as.table(Surv_Sex)[2:1, ],
 ggsave("../pics/Titanic_mosaic_ggplot02.png", width = 8, height = 6, dpi = 72)
 ```
 
+### By Age
 
 ```{r, fig.width = 8, fig.height= 6}
 mosaic_gg(as.table(Surv_Age)[2:1, ], 
@@ -73,6 +93,7 @@ mosaic_gg(as.table(Surv_Age)[2:1, ],
 ggsave("../pics/Titanic_mosaic_ggplot03.png", width = 8, height = 6, dpi = 72)
 ```
 
+### Female by Class
 
 ```{r, fig.width = 8, fig.height= 6}
 mosaic_gg(as.table(Female_Class)[2:1, ], 
@@ -84,6 +105,7 @@ mosaic_gg(as.table(Female_Class)[2:1, ],
 ggsave("../pics/Titanic_mosaic_ggplot04.png", width = 8, height = 6, dpi = 72)
 ```
 
+### Children by Class
 
 ```{r, fig.width = 8, fig.height= 6}
 mosaic_gg(as.table(Child_Class)[2:1, -4], 

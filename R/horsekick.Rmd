@@ -9,7 +9,7 @@ output: html_document
 [^1]: 원시자료는 `pscl` 패키지의 `prussian`이다.
 
 ```{r, message = FALSE}
-# install.packages("pscl", repos = "https://cran.rstudio.com")
+install.packages("pscl", repos = "https://cran.rstudio.com")
 library(pscl)
 data(prussian)
 str(prussian)

@@ -410,12 +410,12 @@ points(earners_income_df,
 
 ```{r, gini coefficient}
 source("area.R")
-gini <- 2 * (1/2 - area.R(x = earners, y = income)/10000)
+gini <- 2 * (1/2 - area_R(x = earners, y = income)/10000)
 ```
 
 계산된 지니계수를 그림 안에 텍스트로 넣어주려면 `paste()`를 이용하여 입력토록한다.
 
-```{r, fig.width = 5.5, fig.height = 5.5}
+```{r, fig.width = 7, fig.height = 7}
 plot(earners_income_df, 
      type = "b", 
      ann = FALSE, 
@@ -451,7 +451,7 @@ text(x = 30, y = 60,
 
 ### Cumulative Distribution
 
-```{r, fig.width = 6, fig.height = 6, fig.keep = 'none', warning = FALSE}
+```{r, fig.width = 6, fig.height = 6, fig.keep = 'none', warning = TRUE}
 library(ggplot2)
 (c1 <- ggplot() +
   geom_line(data = earners_kor_cum_df, 
@@ -502,7 +502,7 @@ ggsave("../pics/cumulative_plot_wage_kr.png", width = 9, height = 9)
 
 ### Lorenz Curve
 
-```{r, fig.width = 6, fig.height = 6, fig.keep = 'none', warning = FALSE}
+```{r, fig.width = 6, fig.height = 6, fig.keep = 'none', warning = TRUE}
 (g1 <- ggplot() +
   geom_line(data = earners_income_df, 
             mapping = aes(x = earners, y = income))) 
