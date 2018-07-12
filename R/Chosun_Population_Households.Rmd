@@ -79,7 +79,7 @@ g1 <- ggplot(data = chosun_melt,
   geom_line() + 
   geom_point(shape = 21, fill = "white", size = 3, show.legend = FALSE) 
 g2 <- g1 + 
-  theme_bw() + theme.kr 
+  theme_bw() + theme_kr
 g3 <- g2 + 
 #  theme(panel.grid.major = element_line(linetype = "dotted", colour = "black")) +
   scale_x_continuous(name = x_lab, breaks = Years_ticks, labels = Years_ticks) +

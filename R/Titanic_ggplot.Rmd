@@ -64,7 +64,7 @@ b1_fill <- barplot_gg_fill(as.data.frame(as.table(Surv_Class)[2:1, ]),
   theme_kr + 
   scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
-top1 <-textGrob("객실 등급별 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+top1 <- textGrob("객실 등급별 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
 grid.arrange(b1_stack, b1_fill, ncol = 2, top = top1)
 ```
 
@@ -100,7 +100,7 @@ b2_fill <- barplot_gg_fill(as.data.frame(as.table(Surv_Sex)[2:1, ]),
   theme_kr + 
   scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
-top2 <-textGrob("남녀별 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+top2 <- textGrob("남녀별 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
 grid.arrange(b2_stack, b2_fill, ncol = 2, top = top2)
 ```
 
@@ -136,7 +136,7 @@ b3_fill <- barplot_gg_fill(as.data.frame(as.table(Surv_Age)[2:1, ]),
   theme_kr + 
   scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
-top3 <-textGrob("어린이와 어른의 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+top3 <- textGrob("어린이와 어른의 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
 grid.arrange(b3_stack, b3_fill, ncol = 2, top = top3)
 ```
 
@@ -172,7 +172,7 @@ b4_fill <- barplot_gg_fill(as.data.frame(as.table(Female_Class)[2:1, ]),
   theme_kr + 
   scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
-top4 <-textGrob("객실 등급별 여성 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+top4 <- textGrob("객실 등급별 여성 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
 grid.arrange(b4_stack, b4_fill, ncol = 2, top = top4)
 ```
 
@@ -208,7 +208,7 @@ b5_fill <- barplot_gg_fill(as.data.frame(as.table(Child_Class)[2:1, ]),
   theme_kr + 
   scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
-top5 <-textGrob("객실 등급별 어린이 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+top5 <- textGrob("객실 등급별 어린이 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
 grid.arrange(b5_stack, b5_fill, ncol = 2, top = top4)
 ```
 

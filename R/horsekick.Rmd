@@ -14,6 +14,7 @@ library(pscl)
 data(prussian)
 str(prussian)
 table(prussian$y)
+options(width = 180)
 ```
 
 ```{r}
@@ -40,7 +41,7 @@ par(family = "HCR Dotum LVT")
 #> 백분율로 표시
 horsekick_p <- n_corps / sum(n_corps)
 #> 누적백분율
-horsekick_cum <- round(cumsum(horsekick_p) * 100, digits = 1)
+horsekick_cum <- cumsum(horsekick_p) * 100
 #> 백분율과 누적백분율 비교
 cbind(horsekick_p, horsekick_cum)
 #> 누적백분율을 점으로 표시. `yaxt = "n"` 의 효과 확인
@@ -75,22 +76,22 @@ plot(x = n_deaths, y = horsekick_cum,
      yaxt = "n")
 axis(side = 2,
      at = c(50, horsekick_cum), 
-     labels = format(c("", horsekick_cum[1:4], ""), nsmall = 1),
+     labels = c("", format(horsekick_cum[1:4], digits = 2, nsmall = 1), ""),
      las = 2)
+#> y축 50.0, 100.0의 눈금으로부터 라벨값의 위치를 조정하여 겹치지 않도록 조치
 axis(side = 2,
      at = c(48.5, horsekick_cum[5] + 1.5), 
      tick = FALSE,
-     labels = format(c(50, horsekick_cum[5]), nsmall = 1),
+     labels = format(c(50, horsekick_cum[5]), digits = 2, nsmall = 1),
      las = 2)
-abline(v = 0:4, 
-       lty = 3)
+abline(v = 0:4, lty = 3)
 lines(c(0, 1), rep(horsekick_cum[1], 2), lty = 1, lwd = 2)
 lines(c(1, 2), rep(horsekick_cum[2], 2), lty = 1, lwd = 2)
 lines(c(2, 3), rep(horsekick_cum[3], 2), lty = 1, lwd = 2)
 lines(c(3, 4), rep(horsekick_cum[4], 2), lty = 1, lwd = 2)
 lines(c(4, 5), rep(horsekick_cum[5], 2), lty = 1, lwd = 2)
 points(x = n_deaths, y = horsekick_cum,
-       pch = 21, bg = "white", col = "black")
+       pch = 21, bg = "black", col = "black")
 points(x = n_deaths[2:5], y = horsekick_cum[1:4],
        pch = 21, bg = "white", col = "black")
 ```
@@ -100,7 +101,7 @@ points(x = n_deaths[2:5], y = horsekick_cum[1:4],
 ```{r}
 h_x <- cbind(rep(0, 5), 1:5)
 h_x
-h_y <- sapply(horsekick_cum, rep, 2)
+h_y <- sapply(horsekick_cum, FUN = rep, times = 2)
 h_y
 h_xy <- cbind(h_x, t(h_y))
 h_xy
@@ -112,7 +113,7 @@ h_xy
 
 ```{r fig.width = 5.5, fig.height = 5.5}
 par(family = "HCR Dotum LVT")
-source("./horsekick_plot.R", echo = FALSE)
+source("./horsekick_plot.R", echo = TRUE)
 apply(h_xy, MARGIN = 1, 
       FUN = function(h) lines(x = h[1:2], y = h[3:4], lty = 3))
 l_xy <- function(h) lines(x = h[1:2], y = h[3:4], lty = 3)
