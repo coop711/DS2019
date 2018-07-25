@@ -67,7 +67,7 @@ b2 <- b1 +
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = y), 
-            label = format(df[, 3], 
+            label = format(ifelse(df[, 3] == 0, "", df[, 3]), 
                            big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
@@ -107,7 +107,7 @@ y_label <- unlist(tapply(df[, 3],
 b3 <- b2 +
   geom_text(aes(y = y_dodge / 2), 
 #            label = format(df[index, "Freq"], big.mark = ","), 
-            label = y_label,
+            label = ifelse(y_label == 0, "", y_label),
             position = position_dodge(width = 0.9)) +
   ggtitle(ggtitle)
 return(b3)
@@ -148,7 +148,8 @@ b2 <- b1 +
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = p_fill), 
-            label = format(df[, 3], big.mark = ","), 
+            label = format(ifelse(df[, 3] == 0, "", df[, 3]), 
+                           big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
 return(b3)

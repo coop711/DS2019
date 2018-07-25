@@ -17,7 +17,7 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 library(extrafont)
-load("sejong_poll_data_kr.RData")
+load("sejong_poll_data_kr_v2.RData")
 str(sejong_poll_kr)
 ```
 
@@ -317,11 +317,12 @@ kable(format(vote_class_2,
 
 소계를 교차표의 주변에 계산
 
-```{r, addmargins}
-kable(format(vote_class_2_am, 
-             big.mark = ","), 
-      caption = "관료와 품관촌민(소계)", 
-      align = rep("r", 3))
+```{r}
+vote_class_2 %>% 
+  cbind("계" = rowSums(.)) %>% 
+  rbind("계" = colSums(.)) %>%
+  format(big.mark = ",") %>%
+  kable(caption = "마진 합 추가", align = "r") 
 ```
 
 백분율을 계산하여 주변에 집계. 
@@ -601,7 +602,7 @@ b2 <- b1 +
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = y), 
-            label = format(df[, 3], 
+            label = format(ifelse(df[, 3] == 0, "", df[, 3]), 
                            big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
@@ -647,7 +648,7 @@ y_label <- unlist(tapply(df[, 3],
 b3 <- b2 +
   geom_text(aes(y = y_dodge / 2), 
 #            label = format(df[index, "Freq"], big.mark = ","), 
-            label = y_label,
+            label = ifelse(y_label == 0, "", y_label),
             position = position_dodge(width = 0.9)) +
   ggtitle(ggtitle)
 return(b3)
@@ -694,7 +695,8 @@ b2 <- b1 +
                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = p_fill), 
-            label = format(df[, 3], big.mark = ","), 
+            label = format(ifelse(df[, 3] == 0, "", df[, 3]), 
+                           big.mark = ","), 
             position = "identity") +
   ggtitle(ggtitle)
 return(b3)
@@ -923,12 +925,17 @@ tbl_p_df$height <- tbl %>%
   prop.table(margin = 2) %>%
   as.data.frame %>%
   `[`(, 3)
-tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], function(x) x / 2 + c(0, cumsum(head(x, -1)))))
-tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, tbl_p_df[, 2], cumsum))
+tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
+                                       tbl_p_df[, 2], 
+                                       function(x) x / 2 + c(0, cumsum(head(x, -1)))))
+tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
+                                   tbl_p_df[, 2], 
+                                   cumsum))
 x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
 # x_center <- (cumsum(tbl_p_m) + c(0, head(cumsum(tbl_p_m), -1)))/2
 tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
-m1 <- ggplot(tbl_p_df, aes(x = center, y = height, width = width)) + 
+m1 <- ggplot(tbl_p_df, 
+             aes(x = center, y = height, width = width)) + 
   geom_bar(aes(fill = tbl_df[, 1]), 
            stat = "identity", 
            col = "white", 
@@ -938,11 +945,12 @@ m2 <- m1 +
   theme_bw(base_family = base_family)
 m3 <- m2 + 
   geom_text(aes(x = center, y = 1.05), 
-            label = tbl_p_df[, 2], 
+            label = ifelse(tbl_p_df[, 2] == 0, "", tbl_p_df[, 2]), 
             family = base_family)
 m4 <- m3 + 
   geom_text(aes(x = center, y = label_height), 
-            label = format(tbl_df[, 3], big.mark = ","), 
+            label = format(ifelse(tbl_df[, 3] == 0, "", tbl_df[, 3]), 
+                           big.mark = ","), 
             position = position_identity())
 x_breaks <- c(0, ifelse(cumsum(tbl_p_m) < 0.1, 0.0, cumsum(tbl_p_m)))
 x_label <- format(x_breaks * 100, 

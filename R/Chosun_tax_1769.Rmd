@@ -93,7 +93,7 @@ g2 <- g1 +
 #> g2
 g3 <- g2 +
   theme_bw() +
-  theme.kr
+  theme_kr
 #> g3
 g4 <- g3 + 
     scale_fill_manual(name = "", 

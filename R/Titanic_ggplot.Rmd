@@ -16,6 +16,8 @@ library(knitr)
 library(pander)
 library(printr)
 library(ggplot2)
+library(grid)
+library(gridExtra)
 load("Titanic_1801.RData")
 ls()
 ```
@@ -43,54 +45,182 @@ Child_Class %>% str
 
 ## Plots 
 
-```{r, fig.width = 8, fig.height= 6}
+### By Class
+
+#### Barplots
+
+```{r, fig.width = 12, fig.height = 6, warning = FALSE, message = FALSE}
+b1_stack <- barplot_gg_stack(as.data.frame(as.table(Surv_Class)[2:1, ]), 
+#                              ggtitle = "객실 등급별 생존/사망",
+                             xlab = "객실 등급", 
+                             fill_name = "생존?") + 
+  theme_kr + 
+  guides(fill = FALSE) +
+  theme(plot.title = element_text(hjust = 0.5))
+b1_fill <- barplot_gg_fill(as.data.frame(as.table(Surv_Class)[2:1, ]), 
+#                            ggtitle = "객실 등급별 생존/사망",
+                           xlab = "객실 등급", 
+                           fill_name = "") + 
+  theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
+  theme(plot.title = element_text(hjust = 0.5))
+top1 <- textGrob("객실 등급별 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+grid.arrange(b1_stack, b1_fill, ncol = 2, top = top1)
+```
+
+#### Mosaic Plots
+
+```{r, fig.width = 8, fig.height = 6, warning = FALSE, message = FALSE}
 mosaic_gg(as.table(Surv_Class)[2:1, ], 
           ggtitle = "객실 등급별 생존/사망",
           xlab = "객실 등급", 
           fill_name = "생존?") + 
   theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
 ggsave("../pics/Titanic_mosaic_ggplot01.png", width = 8, height = 6, dpi = 72)
 ```
-```{r, fig.width = 8, fig.height= 6}
+
+### By Sex
+
+#### Barplots
+
+```{r, fig.width = 12, fig.height = 6, warning = FALSE, message = FALSE}
+b2_stack <- barplot_gg_stack(as.data.frame(as.table(Surv_Sex)[2:1, ]), 
+#                              ggtitle = "객실 등급별 생존/사망",
+                             xlab = "남녀", 
+                             fill_name = "생존?") + 
+  theme_kr + 
+  guides(fill = FALSE) +
+  theme(plot.title = element_text(hjust = 0.5))
+b2_fill <- barplot_gg_fill(as.data.frame(as.table(Surv_Sex)[2:1, ]), 
+#                            ggtitle = "객실 등급별 생존/사망",
+                           xlab = "남녀", 
+                           fill_name = "") + 
+  theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
+  theme(plot.title = element_text(hjust = 0.5))
+top2 <- textGrob("남녀별 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+grid.arrange(b2_stack, b2_fill, ncol = 2, top = top2)
+```
+
+#### Mosaic Plots
+
+```{r, fig.width = 8, fig.height = 6, warning = FALSE, message = FALSE}
 mosaic_gg(as.table(Surv_Sex)[2:1, ], 
           ggtitle = "남녀별 생존/사망", 
           xlab = "객실 등급", 
           fill_name = "생존?") + 
   theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
 ggsave("../pics/Titanic_mosaic_ggplot02.png", width = 8, height = 6, dpi = 72)
 ```
 
+### By Age
 
-```{r, fig.width = 8, fig.height= 6}
+#### Barplots
+
+```{r, fig.width = 12, fig.height = 6, warning = FALSE, message = FALSE}
+b3_stack <- barplot_gg_stack(as.data.frame(as.table(Surv_Age)[2:1, ]), 
+#                              ggtitle = "객실 등급별 생존/사망",
+                             xlab = "어린이와 어른", 
+                             fill_name = "생존?") + 
+  theme_kr + 
+  guides(fill = FALSE) +
+  theme(plot.title = element_text(hjust = 0.5))
+b3_fill <- barplot_gg_fill(as.data.frame(as.table(Surv_Age)[2:1, ]), 
+#                            ggtitle = "객실 등급별 생존/사망",
+                           xlab = "어린이와 어른", 
+                           fill_name = "") + 
+  theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
+  theme(plot.title = element_text(hjust = 0.5))
+top3 <- textGrob("어린이와 어른의 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+grid.arrange(b3_stack, b3_fill, ncol = 2, top = top3)
+```
+
+#### Mosaic Plots
+
+```{r, fig.width = 8, fig.height = 6, warning = FALSE, message = FALSE}
 mosaic_gg(as.table(Surv_Age)[2:1, ], 
           ggtitle = "어린이/어른 생존/사망", 
           xlab = "객실 등급", 
           fill_name = "생존?") + 
   theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
 ggsave("../pics/Titanic_mosaic_ggplot03.png", width = 8, height = 6, dpi = 72)
 ```
 
+### Female by Class
 
-```{r, fig.width = 8, fig.height= 6}
+#### Barplots
+
+```{r, fig.width = 12, fig.height = 6, warning = FALSE, message = FALSE}
+b4_stack <- barplot_gg_stack(as.data.frame(as.table(Female_Class)[2:1, ]), 
+#                              ggtitle = "객실 등급별 생존/사망",
+                             xlab = "객실 등급", 
+                             fill_name = "생존?") + 
+  theme_kr + 
+  guides(fill = FALSE) +
+  theme(plot.title = element_text(hjust = 0.5))
+b4_fill <- barplot_gg_fill(as.data.frame(as.table(Female_Class)[2:1, ]), 
+#                            ggtitle = "객실 등급별 생존/사망",
+                           xlab = "객실 등급", 
+                           fill_name = "") + 
+  theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
+  theme(plot.title = element_text(hjust = 0.5))
+top4 <- textGrob("객실 등급별 여성 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+grid.arrange(b4_stack, b4_fill, ncol = 2, top = top4)
+```
+
+#### Mosaic Plots
+
+```{r, fig.width = 8, fig.height = 6, warning = FALSE, message = FALSE}
 mosaic_gg(as.table(Female_Class)[2:1, ], 
           ggtitle = "객실 등급별 여성 생존/사망", 
           xlab = "객실 등급", 
           fill_name = "생존?") + 
-  theme_kr + 
+  theme_kr +  
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5))
 ggsave("../pics/Titanic_mosaic_ggplot04.png", width = 8, height = 6, dpi = 72)
 ```
 
+### Children by Class
 
-```{r, fig.width = 8, fig.height= 6}
+#### Barplots
+
+```{r, fig.width = 12, fig.height = 6}
+b5_stack <- barplot_gg_stack(as.data.frame(as.table(Child_Class)[2:1, ]), 
+#                              ggtitle = "객실 등급별 생존/사망",
+                             xlab = "객실 등급", 
+                             fill_name = "생존?") + 
+  theme_kr + 
+  guides(fill = FALSE) +
+  theme(plot.title = element_text(hjust = 0.5))
+b5_fill <- barplot_gg_fill(as.data.frame(as.table(Child_Class)[2:1, ]), 
+#                            ggtitle = "객실 등급별 생존/사망",
+                           xlab = "객실 등급", 
+                           fill_name = "") + 
+  theme_kr + 
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
+  theme(plot.title = element_text(hjust = 0.5))
+top5 <- textGrob("객실 등급별 어린이 생존/사망", gp = gpar(cex = 1.2, fontfamily = "HCR Dotum LVT"))
+grid.arrange(b5_stack, b5_fill, ncol = 2, top = top4)
+```
+
+#### Mosaic Plots
+
+```{r, fig.width = 8, fig.height = 6}
 mosaic_gg(as.table(Child_Class)[2:1, -4], 
           ggtitle = "객실 등급별 어린이 생존/사망", 
           xlab = "객실 등급", 
           fill_name = "생존?") + 
-  theme_kr + 
+  theme_kr +  
+  scale_fill_manual(name = "", labels = c("생존", "사망"), values = rainbow(2)[2:1]) +
   theme(plot.title = element_text(hjust = 0.5)) 
 ggsave("../pics/Titanic_mosaic_ggplot05.png", width = 8, height = 6, dpi = 72)
 ```
