@@ -13,10 +13,10 @@ output: html_document
 
 ```{r, setup, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(pander)
+# library(pander)
 library(knitr)
 library(magrittr)
-library(printr)
+# library(printr)
 options(width = 180)
 ```
 
