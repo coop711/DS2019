@@ -292,16 +292,24 @@ pie_gg(vote_df,
 ## 계급별 찬반
 
 ```{r, vote by classes}
-kable(format(vote_class, 
-             big.mark = ","), 
-      align = "r", 
-      caption = "계급별 찬반")
-kable(format(prop.table(vote_class, 
-                        margin = 2) * 100, 
-             digits = 3, 
-             nsmall = 1), 
-      align = "r", 
-      caption = "계급별 찬반(%)")
+vote_class %>%
+  format(big.mark = ",") %>%
+  kable(align = "r", caption = "계급별 찬반")
+# kable(format(vote_class, 
+#              big.mark = ","), 
+#       align = "r", 
+#       caption = "계급별 찬반")
+vote_class %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(align = "r", caption = "계급별 찬반(%)")
+# kable(format(prop.table(vote_class, 
+#                         margin = 2) * 100, 
+#              digits = 3, 
+#              nsmall = 1), 
+#       align = "r", 
+#       caption = "계급별 찬반(%)")
 ```
 
 ## 품관촌민 별도 분석
@@ -309,10 +317,13 @@ kable(format(prop.table(vote_class,
 품관촌민의 수효가 상대적으로 많아서
 
 ```{r, vote by class2}
-kable(format(vote_class_2, 
-             big.mark = ","), 
-      align = rep("r", 2), 
-      caption = "품관촌민")
+vote_class_2 %>%
+  format(big.mark = ",") %>%
+  kable(align = rep("r", 2), caption = "품관촌민")
+# kable(format(vote_class_2, 
+#              big.mark = ","), 
+#       align = rep("r", 2), 
+#       caption = "품관촌민")
 ```
 
 소계를 교차표의 주변에 계산
@@ -328,11 +339,16 @@ vote_class_2 %>%
 백분율을 계산하여 주변에 집계. 
 
 ```{r, Percentage}
-kable(format(prop.table(vote_class_2, 
-                        margin = 2) * 100, 
-             digits = 3, nsmall = 1), 
-      caption = "관료와 품관촌민(%)", 
-      align = "r")
+vote_class_2 %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(align = "r", caption = "관료와 품관촌민(%)")
+# kable(format(prop.table(vote_class_2, 
+#                         margin = 2) * 100, 
+#              digits = 3, nsmall = 1), 
+#       caption = "관료와 품관촌민(%)", 
+#       align = "r")
 ```
 
 ### data frame 변환
@@ -340,28 +356,44 @@ kable(format(prop.table(vote_class_2,
 ```{r, message = FALSE}
 vote_class_2_df <- as.data.frame(vote_class_2)
 vnames_class_kr <- c("찬반", "계급", "집계")
-kable(format(vote_class_2_df, 
-             big.mark = ","), 
-      align = c('c', 'c', 'r'), 
+vote_class_2_df %>%
+  format(big.mark = ",") %>%
+  kable(align = c('c', 'c', 'r'), 
       col.names = vnames_class_kr, 
       caption = "관료와 품관촌민")
+# kable(format(vote_class_2_df, 
+#              big.mark = ","), 
+#       align = c('c', 'c', 'r'), 
+#       col.names = vnames_class_kr, 
+#       caption = "관료와 품관촌민")
 vote_bureaus_df <- subset(vote_class_2_df, 
                           vote_class_2_df$class_2 == "관료", 
                           select = c("vote", "Freq"))
-kable(format(vote_bureaus_df, 
-             big.mark = ","), 
-      align = 'r', 
+vote_bureaus_df %>%
+  format(big.mark = ",") %>%
+  kable(align = 'r', 
       col.names = vnames_class_kr[-2], 
       caption = "관료의 찬반")
+# kable(format(vote_bureaus_df, 
+#              big.mark = ","), 
+#       align = 'r', 
+#       col.names = vnames_class_kr[-2], 
+#       caption = "관료의 찬반")
 vote_commons_df <- subset(vote_class_2_df, 
                           vote_class_2_df$class_2 == "품관촌민", 
                           select = c("vote", "Freq"))
-kable(format(vote_commons_df, 
-             big.mark = ","), 
-      align = 'r', 
+vote_commons_df %>%
+  format(big.mark = ",") %>%
+  kable(align = 'r', 
       row.names = FALSE, 
       col.names = vnames_class_kr[-2], 
       caption = "품관촌민의 찬반")
+# kable(format(vote_commons_df, 
+#              big.mark = ","), 
+#       align = 'r', 
+#       row.names = FALSE, 
+#       col.names = vnames_class_kr[-2], 
+#      caption = "품관촌민의 찬반")
 ```
 
 <P style = "page-break-before:always">
@@ -389,21 +421,43 @@ ggsave("../pics/sejong_bureaus_commons_pie_ggplot.png", pies_grid, width = 8, he
 ### 관료와 품관촌민
 
 ```{r, by region}
-kable(vote_region_bureaus, caption = "관료들의 지역별 찬반")
-kable(format(prop.table(vote_region_bureaus, margin = 2) * 100, digits = 3, nsmall = 1), 
-      align = rep("r", 9), caption = "관료들의 지역별 찬반(%)")
-kable(format(vote_region_commons, big.mark = ","), 
-      align = "r", caption = "품관촌민들의 지역별 찬반")
-kable(format(prop.table(vote_region_commons, margin = 2) * 100, digits = 1, nsmall = 1), 
-      align = "r", caption = "품관촌민들의 지역별 찬반(%)")
+vote_region_bureaus %>%
+  kable(caption = "관료들의 지역별 찬반")
+# kable(vote_region_bureaus, caption = "관료들의 지역별 찬반")
+vote_region_bureaus %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(align = "r", caption = "관료들의 지역별 찬반(%)")
+# kable(format(prop.table(vote_region_bureaus, margin = 2) * 100, digits = 3, nsmall = 1), 
+#       align = rep("r", 9), caption = "관료들의 지역별 찬반(%)")
+vote_region_commons %>%
+  format(big.mark = ",") %>%
+  kable(align = "r", caption = "품관촌민들의 지역별 찬반")
+# kable(format(vote_region_commons, big.mark = ","), 
+#       align = "r", caption = "품관촌민들의 지역별 찬반")
+vote_region_commons %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 1, nsmall = 1) %>%
+  kable(align = "r", caption = "품관촌민들의 지역별 찬반(%)")
+# kable(format(prop.table(vote_region_commons, margin = 2) * 100, digits = 1, nsmall = 1), 
+#       align = "r", caption = "품관촌민들의 지역별 찬반(%)")
 ```
 
 ## 서울의 찬반
 
 ```{r, Seoul}
-kable(vote_seoul_class, caption = "서울의 찬반")
-kable(format(prop.table(vote_seoul_class, margin = 2) * 100, digits = 1, nsmall = 1), 
-      align = "r", caption = "서울의 찬반(%)")
+vote_seoul_class %>%
+  kable(caption = "서울의 찬반")
+# kable(vote_seoul_class, caption = "서울의 찬반")
+vote_seoul_class %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 1, nsmall = 1) %>%
+  kable(align = "r", caption = "서울의 찬반(%)")
+# kable(format(prop.table(vote_seoul_class, margin = 2) * 100, digits = 1, nsmall = 1), 
+#      align = "r", caption = "서울의 찬반(%)")
 ```
 
 <P style = "page-break-before:always">
@@ -1004,14 +1058,23 @@ ggsave("../pics/sejong_seoul_mosaic_ggplot.png", m5_seoul, width = 6, height = 4
 ## 지역별 관료들의 찬반(서울 제외)
 
 ```{r, local bureaus}
-kable(vote_region_bureaus[, -1], 
-      caption = "지역별 관료들의 찬반(서울 제외)")
-kable(format(prop.table(vote_region_bureaus[, -1], 
-                        margin = 2)*100, 
-             digits = 1, 
-             nsmall = 1), 
-      align = "r", 
-      caption = "지역별 관료들의 찬반(서울 제외, %)")
+vote_region_bureaus %>%
+  `[`(, -1) %>%
+  kable(caption = "지역별 관료들의 찬반(서울 제외)")
+# kable(vote_region_bureaus[, -1], 
+#       caption = "지역별 관료들의 찬반(서울 제외)")
+vote_region_bureaus %>%
+  `[`(, -1) %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 1, nsmall = 1) %>%
+  kable(align = "r", caption = "지역별 관료들의 찬반(서울 제외, %)")
+# kable(format(prop.table(vote_region_bureaus[, -1], 
+#                         margin = 2)*100, 
+#              digits = 1, 
+#              nsmall = 1), 
+#       align = "r", 
+#       caption = "지역별 관료들의 찬반(서울 제외, %)")
 ```
 
 <P style = "page-break-before:always">
@@ -1085,15 +1148,23 @@ ggsave("../pics/sejong_commons_mosaic_ggplot.png", m5_commons, width = 12, heigh
 관료들의 찬반과 품관촌민의 찬반이 다른 곳.
 
 ```{r, chungcheong}
-kable(format(vote_chung_class, 
-             big.mark = ","), 
-      caption = "충청도 사례", 
-      align = "r")
-kable(format(prop.table(vote_chung_class, 
-                        margin = 2)*100, 
-             digits = 3, nsmall = 1), 
-      caption = "충청도 사례", 
-      align = "r")
+vote_chung_class %>%
+  format(big.mark = ",") %>% 
+  kable(align = "r", caption = "충청도 사례")
+# kable(format(vote_chung_class, 
+#              big.mark = ","), 
+#       caption = "충청도 사례", 
+#       align = "r")
+vote_chung_class %>%
+  prop.table(margin = 2) %>%
+  `*`(100) %>%
+  format(digits = 3, nsmall = 1) %>%
+  kable(align = "r", caption = "충청도 사례")
+# kable(format(prop.table(vote_chung_class, 
+#                         margin = 2)*100, 
+#              digits = 3, nsmall = 1), 
+#       caption = "충청도 사례", 
+#       align = "r")
 ```
 
 ### 막대그래프
