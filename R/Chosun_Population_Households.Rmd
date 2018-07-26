@@ -26,7 +26,7 @@ str(chosun_df)
 ## Plot (R Base)
 
 ```{r, base plot, fig.width = 9, fig.height = 6.75}
-par(family = "HCR Dotum LVT")
+par(family = "")
 plot(Population / 10000 ~ Years, data = chosun_df, type = "b", 
      pch = 21, col = "red", bg = "white",
      ylim = c(0, 800), xaxt = "n", yaxt = "n", ann = FALSE)
@@ -64,7 +64,7 @@ title(main = main_title, xlab = x_lab, ylab = y_lab)
 ```{r, reshape}
 library(ggplot2)
 library(reshape2)
-source("./theme_kr.R")
+# source("./theme_kr.R")
 chosun_melt <- melt(chosun_df, 
                     id.vars = "Years", measure.vars = c("Households", "Population"),
                     variable.name = "Variable", value.name = "Counts")
@@ -78,8 +78,8 @@ g1 <- ggplot(data = chosun_melt,
              mapping = aes(x = Years, y = Counts / 10000, colour = Variable)) + 
   geom_line() + 
   geom_point(shape = 21, fill = "white", size = 3, show.legend = FALSE) 
-g2 <- g1 + 
-  theme_bw() + theme_kr
+g2 <- g1 + theme_bw() 
+# + theme_kr
 g3 <- g2 + 
 #  theme(panel.grid.major = element_line(linetype = "dotted", colour = "black")) +
   scale_x_continuous(name = x_lab, breaks = Years_ticks, labels = Years_ticks) +
@@ -93,7 +93,7 @@ g6 <- g5 +
         legend.background = element_rect(colour = "black", linetype = "solid"))
 g7 <- g6 + 
   ggtitle(main_title) +
-  annotate("text", x = 1700, y = c(500, 100), label = c("인구", "호수"), family = "HCR Dotum LVT")
+  annotate("text", x = 1700, y = c(500, 100), label = c("인구", "호수"), family = "")
 g7
 # ggsave("../pics/chosun_demo_ggplot.png", width = 9, height = 81/16, units = "in", dpi = 72)
 ```
