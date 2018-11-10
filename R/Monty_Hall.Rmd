@@ -48,7 +48,7 @@ monty_hall()
 ```{r}
 N <- 30
 monty_result <- replicate(N, monty_hall()) %>% t
-monty_result)
+monty_result
 table(monty_result[5, ])
 sum(monty_result[5, ] == "Switching wins")/N
 cumsum(monty_result[5, ] == "Switching wins")
