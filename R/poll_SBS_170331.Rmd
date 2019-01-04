@@ -18,7 +18,7 @@ SBS 뉴스에서는 다음과 같은 도표의 후보지지도 여론조사 결�
 ## Data Setup
 
 ```{r, data}
-# library(extrafont)
+library(extrafont)
 candidates <- c("문재인", "안철수", "안희정", "이재명", "홍준표", "김진태", "심상정", "유승민") 
 rates <- c(35.2, 17.4, 12.0, 9.5, 7.7, 5.3, 3.4, 2.6)
 party <- c("더불어민주당", "자유한국당", "국민의당", "정의당", "바른정당")
@@ -56,7 +56,7 @@ barplot(rates)
 ### Place Names under Bars
 
 ```{r, names, fig.width = 8, fig.height = 3.6}
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 b1 <- barplot(rates, 
               axes = FALSE, 
               col = "dodgerblue", 
@@ -70,7 +70,7 @@ b1 <- barplot(rates,
 ### Names closer to Bars using `mtext()`
 
 ```{r, names closer to bars,  fig.width = 8, fig.height = 4}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 b1 <- barplot(rates, 
               axes = FALSE, 
               col = "dodgerblue", 
@@ -95,7 +95,7 @@ title(main = main_title, cex.main = 1.5, line = -2)
 ## Rates with different font size for digits
 
 ```{r, different font sizes, fig.width = 8, fig.height = 4}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 b1 <- barplot(rates, 
               axes = FALSE, 
               col = "dodgerblue", 
@@ -165,7 +165,7 @@ g0 <- ggplot(data = rates_df,
 
 ```{r, font family 2, fig.width = 8, fig.height = 4}
 (g2 <- g1 +
-  theme_bw(base_family = ""))
+  theme_bw(base_family = "KoPubWorldDotum Medium"))
 ```
 
 <P style = "page-break-before:always">
@@ -250,7 +250,7 @@ g0 <- ggplot(data = rates_df,
                             y = -1,
                             label = 후보),
               size = 5,
-              family = ""))
+              family = "KoPubWorldDotum Medium"))
 ```
 
 <P style = "page-break-before:always">
@@ -266,7 +266,7 @@ g0 <- ggplot(data = rates_df,
              label = main_title, 
              vjust = 0, 
              size = 10, 
-             family = ""))
+             family = "KoPubWorldDotum Medium"))
 ```
 
 <P style = "page-break-before:always">
@@ -283,7 +283,7 @@ g0 <- ggplot(data = rates_df,
                size = 10,
                fill = "dodgerblue4",
                colour = "white",
-               family = ""))
+               family = "KoPubWorldDotum Bold"))
 ```
 
 <P style = "page-break-before:always">
@@ -297,5 +297,5 @@ g0 <- ggplot(data = rates_df,
              label = note_text, 
              size = 2, 
              hjust = 0,
-             family = ""))
+             family = "KoPubWorldDotum Medium"))
 ```

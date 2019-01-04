@@ -8,7 +8,7 @@ output: html_document
 오기수 교수의 논문 조선시대 각 도별 인구 및 전답과 조세부담액 분석에 등장하는 __연도별 호수 및 인구와 호당인구__ 를 도표로 제시
 
 ```{r}
-knitr::include_graphics("../pics/chosun_population_households.png", dpi = 96)
+knitr::include_graphics("../pics/chosun_population_households.png", dpi = 84)
 ```
 
 <P style = "page-break-before:always">
@@ -26,7 +26,7 @@ str(chosun_df)
 ## Plot (R Base)
 
 ```{r, base plot, fig.width = 9, fig.height = 6.75}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 plot(Population / 10000 ~ Years, data = chosun_df, type = "b", 
      pch = 21, col = "red", bg = "white",
      ylim = c(0, 800), xaxt = "n", yaxt = "n", ann = FALSE)
@@ -47,8 +47,9 @@ legend("topleft", inset = 0.05, legend = c("인구", "호수"), lty = 1, col = c
 text(x = 1700, y = c(500, 100), labels = c("인구", "호수"))
 main_title <- "조선시대 호수와 인구수의 변화"
 x_lab <- "연도"
-y_lab <- "호수와 인구수(단위 만)"
-title(main = main_title, xlab = x_lab, ylab = y_lab)
+y_lab <- "호수와 인구수\n(단위 만)"
+title(main = main_title, line = 1, cex.main = 2, family = "KoPubWorldDotum Bold")
+title(xlab = x_lab, ylab = y_lab, line = 2, family = "KoPubWorldDotum Bold")
 # dev.copy(png, file = "../pics/chosun_demo.png", width = 800, height = 450)
 # dev.off()
 ```
@@ -64,7 +65,7 @@ title(main = main_title, xlab = x_lab, ylab = y_lab)
 ```{r, reshape}
 library(ggplot2)
 library(reshape2)
-# source("./theme_kr.R")
+source("theme_kr.R")
 chosun_melt <- melt(chosun_df, 
                     id.vars = "Years", measure.vars = c("Households", "Population"),
                     variable.name = "Variable", value.name = "Counts")
@@ -78,8 +79,9 @@ g1 <- ggplot(data = chosun_melt,
              mapping = aes(x = Years, y = Counts / 10000, colour = Variable)) + 
   geom_line() + 
   geom_point(shape = 21, fill = "white", size = 3, show.legend = FALSE) 
-g2 <- g1 + theme_bw() 
-# + theme_kr
+g2 <- g1 + 
+  theme_bw() +  
+  theme_kr
 g3 <- g2 + 
 #  theme(panel.grid.major = element_line(linetype = "dotted", colour = "black")) +
   scale_x_continuous(name = x_lab, breaks = Years_ticks, labels = Years_ticks) +
@@ -87,13 +89,17 @@ g3 <- g2 +
 g4 <- g3 +
   scale_y_continuous(name = y_lab, breaks = y_breaks, labels = y_labels) +
   theme(axis.text.y = element_text(angle = 0))
-g5 <- g4 + scale_colour_manual(name = "구분", values = c("red", "blue"), labels = c("호수", "인구수")) 
+g5 <- g4 + 
+  scale_colour_manual(values = c("red", "blue"), labels = c("호수", "인구수")) +
+  theme(legend.title = element_blank())
 g6 <- g5 + 
   theme(legend.position = c(0.2, 0.8), 
         legend.background = element_rect(colour = "black", linetype = "solid"))
 g7 <- g6 + 
-  ggtitle(main_title) +
-  annotate("text", x = 1700, y = c(500, 100), label = c("인구", "호수"), family = "")
+  ggtitle(main_title) + 
+  theme(plot.title = element_text(hjust = 0.5, size = 18, margin = margin(b = 12))) +
+  annotate("text", x = 1700, y = c(500, 100), label = c("인구", "호수"), 
+           family = "KoPubWorldDotum Medium")
 g7
 # ggsave("../pics/chosun_demo_ggplot.png", width = 9, height = 81/16, units = "in", dpi = 72)
 ```

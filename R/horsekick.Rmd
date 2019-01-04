@@ -37,7 +37,7 @@ summary(horsekick_long)
 ```{r fig.width = 5.5, fig.height = 5.5}
 options(digits = 3)
 #> 한글 폰트 설정
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 #> 백분율로 표시
 horsekick_p <- n_corps / sum(n_corps)
 #> 누적백분율
@@ -69,7 +69,7 @@ points(x = n_deaths[2:5], y = horsekick_cum[1:4],
 
 ```{r fig.width = 5.5, fig.height = 5.5}
 options(digits = 3)
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 plot(x = n_deaths, y = horsekick_cum, 
      xlim = c(-0.5,4.5), ylim = c(50, 100), 
      xlab = "사망자 수", ylab = "누적 백분률(%)", 
@@ -112,8 +112,8 @@ h_xy
 격자선을 놓는 과정까지를 두 줄로 줄일 수 있다.
 
 ```{r fig.width = 5.5, fig.height = 5.5}
-par(family = "HCR Dotum LVT")
-source("./horsekick_plot.R", echo = TRUE)
+par(family = "KoPubWorldDotum Medium")
+source("horsekick_plot.R", echo = TRUE)
 apply(h_xy, MARGIN = 1, 
       FUN = function(h) lines(x = h[1:2], y = h[3:4], lty = 3))
 l_xy <- function(h) lines(x = h[1:2], y = h[3:4], lty = 3)
@@ -122,7 +122,7 @@ l_xy <- function(h) lines(x = h[1:2], y = h[3:4], lty = 3)
 누적분포 윗 면적을 명확히 표시하기 위하여 빗금
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 library(RColorBrewer)
 h_pal <- brewer.pal(4, name = "Purples")
 source("horsekick_plot.R", echo = FALSE)
@@ -158,7 +158,7 @@ lapply(data.frame(poly_xy),
 `sapply()`, `lapply()`, `mapply()`를 적재적소에 활용하여 분량을 줄여보자.
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 source("horsekick_plot.R")
 # apply(h_xy, MARGIN = 1, FUN = l_xy)
 mapply(polygon, 
@@ -183,7 +183,7 @@ poly_xy_2
 ```
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 source("horsekick_plot.R")
 apply(h_xy, MARGIN = 1, FUN = l_xy)
 mapply(polygon, 
@@ -199,8 +199,8 @@ points(x = n_deaths[2:5], y = horsekick_cum[1:4],
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
 options(digits = 3)
-par(family = "HCR Dotum LVT")
-source("./horsekick_plot.R", echo = FALSE)
+par(family = "KoPubWorldDotum Medium")
+source("horsekick_plot.R", echo = FALSE)
 apply(h_xy, MARGIN = 1, FUN = l_xy)
 polygon(c(0, 1, 1, 0), c(rep(horsekick_cum[1], 2), rep(horsekick_cum[2], 2)), 
         col = h_pal[1])

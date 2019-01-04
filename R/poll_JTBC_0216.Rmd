@@ -30,7 +30,7 @@ rates_df
 ## Barplot(R Base)
 
 ```{r, fig.width = 8, fig.height = 4}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 b1 <- barplot(t(as.matrix(rates_df[, 2:3])), 
               axes = FALSE, 
               ylim = c(0, 65), 
@@ -85,7 +85,7 @@ str(rates_df_melt)
 
 ```{r, fig.width = 8, fig.height = 4}
 library(ggplot2)
-# source("./theme_kr.R")
+source("theme_kr.R")
 g0 <- ggplot(data = rates_df_melt, 
              mapping = aes(x = candidates_f, 
                            y = rates, 
@@ -113,8 +113,8 @@ g0 <- ggplot(data = rates_df_melt,
 
 ```{r, fig.height = 4, fig.width = 8}
 (g3 <- g2 +
-  theme_bw())
-#  theme.kr)
+  theme_bw() +
+  theme_kr)
 ```
 
 <P style = "page-break-before:always">
@@ -162,6 +162,6 @@ g0 <- ggplot(data = rates_df_melt,
 ```{r, fig.height = 4, fig.width = 8}
 (g8 <- g7 +
   theme(plot.title = element_text(hjust = 0.5), 
-        plot.subtitle = element_text(family = ""),
+        plot.subtitle = element_text(family = "KoPubWorldDotum Medium"),
         legend.position = c(0.9, 0.7)))
 ```

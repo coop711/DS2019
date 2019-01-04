@@ -19,7 +19,7 @@ library(knitr)
 library(magrittr)
 ```
 
-`r include_graphics("../pics/chosun_field_history.png", dpi = NA)`
+`r include_graphics("../pics/chosun_field_history.png", dpi = 200)`
 
 <P style = "page-break-before:always">
 
@@ -75,8 +75,8 @@ field_melt %>% str
 
 ```{r, ggplot, warning = FALSE, message = FALSE, fig.width = 9, fig.height = 5}
 library(ggplot2)
-# library(extrafont)
-source("./theme_kr.R")
+library(extrafont)
+source("theme_kr.R")
 g0 <- ggplot()
 g1 <- g0 +
   geom_area(data = field_melt, 
@@ -133,7 +133,7 @@ g5
 ```{r, warning = FALSE, message = FALSE, fig.width = 9, fig.height = 5}
 g6 <- g5 +
   labs(title = "조선 시대 도별 논밭통계", subtitle = "(도표 안의 수치는 기록된 값들의 평균)") +
-  theme(plot.subtitle = element_text(family = "HCR Dotum LVT", hjust = 1))
+  theme(plot.subtitle = element_text(family = "KoPubWorldDotum Medium", hjust = 1))
 g6
 ```
 
@@ -190,18 +190,18 @@ g10 <- g9 +
   geom_text(data = text_df, 
             mapping = aes(x = x, y = y), 
             label = mean_text, 
-            family = "HCR Dotum LVT", size = 3) +
+            family = "KoPubWorldDotum Medium", size = 3) +
   annotate("text", x = 1592, y = 1650000, 
            label = "임진왜란", 
            colour = "red",
            size = 5,
-           family = "HCR Dotum LVT")
-#  theme(text = element_text(family = "HCR Dotum LVT"))
+           family = "KoPubWorldDotum Medium")
+#  theme(text = element_text(family = "KoPubWorldDotum Medium"))
 #  annotate("text", 
 #           x = text_df$x, 
 #           y = text_df$y, 
 #           label = mean_text, 
-#           family = "HCR Dotum LVT")
+#           family = "KoPubWorldDotum Medium")
 
 g10
 

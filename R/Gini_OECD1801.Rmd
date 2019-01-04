@@ -228,7 +228,7 @@ ggplot(data = Gini_b_a_order_melt,
        mapping = aes(x = Country_order, y = Gini_Coef, fill = Tax)) + 
   geom_bar(stat = "identity", position = "dodge", na.rm = TRUE) +
   geom_hline(yintercept = 0.4, color = "red", linetype = 3, size = 1) +
-  scale_fill_brewer(type = "qual", palette = "Paired") +
+  scale_fill_brewer(type = "qual", palette = "Set1", direction = -1) +
   labs(title = "OECD Gini Coefficient", 
        subtitle = "Before and After Tax", 
        y = "Gini Coefficient") +

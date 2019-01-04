@@ -37,7 +37,7 @@ barplot(rates)
 <P style = "page-break-before:always">
 
 ```{r, fig.width = 8, fig.height = 4}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 b1 <- barplot(rates, 
               axes = FALSE, 
               col = candidates_colour, 
@@ -77,7 +77,7 @@ g0 <- ggplot(data = rates_df,
   geom_bar(stat = "identity", 
            fill = candidates_colour))
 (g2 <- g1 +
-  theme_bw(base_family = ""))
+  theme_bw(base_family = "KoPubWorldDotum Medium"))
 (g3 <- g2 +
   geom_text(mapping = aes(x = 후보, 
                           y = 지지도 + c(rep(-3, 4), rep(2, 2)), 
@@ -119,5 +119,5 @@ g0 <- ggplot(data = rates_df,
              label = main_title, 
              vjust = 1.5, 
              size = 6,
-             family = ""))
+             family = "KoPubWorldDotum Bold"))
 ```

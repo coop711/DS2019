@@ -99,7 +99,7 @@ barplot(height_earners,
 
 막대의 이름을 넣어 다시 그리되, 막대 사이의 공간을 없애면
  
-```{r, barplot no space,  fig.width = 12, fig.height = 4}
+```{r, barplot no space, fig.width = 12, fig.height = 4}
 barplot(height_earners, 
         width = income_widths, 
         space = 0, 
@@ -502,7 +502,7 @@ ggsave("../pics/cumulative_plot_wage_kr.png", width = 9, height = 9)
 
 ### Lorenz Curve
 
-```{r, fig.width = 6, fig.height = 6, fig.keep = 'none', warning = TRUE}
+```{r, fig.width = 6, fig.height = 6, fig.keep = 'none', warning = FALSE}
 (g1 <- ggplot() +
   geom_line(data = earners_income_df, 
             mapping = aes(x = earners, y = income))) 
