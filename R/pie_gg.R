@@ -1,5 +1,5 @@
 pie_gg <-
-function(df, ggtitle = "", font_family = ""){
+function(df, ggtitle = "", font_family = "KoPubWorldDotum Medium"){
   n <- length(names(df))
   y_coord <- df[, 2] / 2 + c(0, cumsum(head(df[, 2], -1)))
   pie_label <- paste(levels(df[, 1]), format(df[, 2], big.mark = ","), 

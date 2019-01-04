@@ -1,7 +1,7 @@
 barplot_gg <-
 function(x, 
                        position, 
-                       base_family = "", 
+                       base_family = "KoPubWorldDotum Medium", 
                        ggtitle = "", 
                        xlab = "", 
                        ylab = "", 
@@ -28,7 +28,7 @@ function(x,
 }
 barplot_gg_stack <-
 function(df, 
-                             base_family = "", 
+                             base_family = "KoPubWorldDotum Medium", 
                              ggtitle = "", 
                              xlab = "", 
                              ylab = "", 
@@ -75,7 +75,7 @@ return(b3)
 }
 barplot_gg_dodge <-
 function(df, 
-                             base_family = "", 
+                             base_family = "KoPubWorldDotum Medium", 
                              ggtitle = "", 
                              xlab = "", 
                              ylab = "", 
@@ -114,7 +114,7 @@ return(b3)
 }
 barplot_gg_fill <-
 function(df, 
-                            base_family = "", 
+                            base_family = "KoPubWorldDotum Medium", 
                             ggtitle = "", 
                             xlab = "", 
                             ylab = "", 

@@ -71,7 +71,7 @@ Surv_Class %>%
 이를 `barplot`으로 나타내는 데 있어서 각 `argument`가 왜  필요한지 시행착오를 거쳐 파악해 볼 것.
 
 ```{r, fig.width = 12, fig.height = 6}
-par(mfrow = c(1, 2), family = "HCR Dotum LVT")
+par(mfrow = c(1, 2), family = "KoPubWorldDotum Medium")
 #> Titanic %>% 
 #>   apply(MARGIN = c(4, 1), FUN = sum) 
 b1 <- Surv_Class %>% 
@@ -106,7 +106,8 @@ text(x = b1_p %>% rep(times = 2),
        format(digits = 2, nsmall = 1) %>%
        paste0("%"))
 legend("topleft", inset = 0.05, fill = rainbow(2), legend = c("사망", "생존"))
-title(main = "객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+title(main = "객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5,
+      family = "KoPubWorldDotum Bold")
 dev.copy(png, "../pics/Titanic_barplot01.png", width = 840, height = 420)
 dev.off()
 ```
@@ -114,7 +115,7 @@ dev.off()
 ### Mosaic Plot
 
 ```{r, fig.width = 6, fig.height = 6, fig.align = "center"}
-par(mfrow = c(1, 1), family = "HCR Dotum LVT")
+par(mfrow = c(1, 1), family = "KoPubWorldDotum Medium")
 mosaicplot(t(Surv_Class), main = "객실 등급별 생존/사망",
            xlab = "객실 등급", ylab = "생존/사망",
            col = rainbow(2))
@@ -147,7 +148,7 @@ Surv_Sex %>%
 이를 `barplot`으로 나타내는 데 있어서 각 `argument`가 왜  필요한지 시행착오를 겪어 볼 것.
 
 ```{r, fig.width = 12, fig.height = 6}
-par(mfrow = c(1, 2), family = "HCR Dotum LVT")
+par(mfrow = c(1, 2), family = "KoPubWorldDotum Medium")
 b2 <- Surv_Sex %>% 
   barplot(yaxt = "n", col = rainbow(2))
 axis(side = 2, 
@@ -180,7 +181,8 @@ text(x = b2_p %>% rep(times = 2),
        format(digits = 2, nsmall = 1) %>%
        paste0("%"))
 legend("topright", inset = 0.15, fill = rainbow(2), legend = c("사망", "생존"))
-title(main = "성별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+title(main = "성별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5,
+      family = "KoPubWorldDotum Bold")
 dev.copy(png, "../pics/Titanic_barplot02.png", width = 840, height = 420)
 dev.off()
 ```
@@ -188,7 +190,7 @@ dev.off()
 ### Mosaic Plot
 
 ```{r, fig.width = 6, fig.height = 6, fig.align = "center"}
-par(mfrow = c(1, 1), family = "HCR Dotum LVT")
+par(mfrow = c(1, 1), family = "KoPubWorldDotum Medium")
 mosaicplot(t(Surv_Sex), main = "성별 생존/사망", 
            xlab = "남/여", ylab = "생존/사망",
            col = rainbow(2))
@@ -221,7 +223,7 @@ Surv_Age %>%
 이를 `barplot`으로 나타내는 데 있어서 각 `argument`가 왜  필요한지 시행착오를 겪어 볼 것.
 
 ```{r, fig.width = 12, fig.height = 6}
-par(mfrow = c(1, 2), family = "HCR Dotum LVT")
+par(mfrow = c(1, 2), family = "KoPubWorldDotum Medium")
 b3 <- Surv_Age %>% 
   barplot(yaxt = "n", col = rainbow(2))
 axis(side = 2, 
@@ -254,7 +256,8 @@ text(x = b3_p %>% rep(times = 2),
        format(digits = 2, nsmall = 1) %>%
        paste0("%"))
 legend(x = 0.5, y = 0.95, fill = rainbow(2), legend = c("사망", "생존"))
-title(main = "연령별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+title(main = "연령별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5,
+      family = "KoPubWorldDotum Bold")
 dev.copy(png, "../pics/Titanic_barplot03.png", width = 840, height = 420)
 dev.off()
 ```
@@ -262,7 +265,7 @@ dev.off()
 ### Mosaic Plot
 
 ```{r, fig.width = 6, fig.height = 6, fig.align = "center"}
-par(mfrow = c(1, 1), family = "HCR Dotum LVT")
+par(mfrow = c(1, 1), family = "KoPubWorldDotum Medium")
 mosaicplot(t(Surv_Age), main = "연령별 생존/사망",
            xlab = "어린이/어른", ylab = "생존/사망", 
            col = rainbow(2))
@@ -292,7 +295,7 @@ Child_Class %>%
 ### Plots
 
 ```{r, fig.width = 12, fig.height = 6}
-par(mfrow = c(1, 2), family = "HCR Dotum LVT")
+par(mfrow = c(1, 2), family = "KoPubWorldDotum Medium")
 b4 <- Child_Class %>% 
   barplot(yaxt = "n", col = rainbow(2))
 axis(side = 2, 
@@ -327,7 +330,8 @@ text(x = b4_p %>% rep(times = 2),
        format(digits = 2, nsmall = 1) %>%
        paste0("%"))
 legend("topright", inset = 0.05, fill = rainbow(2), legend = c("사망", "생존"))
-title(main = "어린이들의 객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+title(main = "어린이들의 객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5,
+      family = "KoPubWorldDotum Bold")
 dev.copy(png, "../pics/Titanic_barplot04.png", width = 840, height = 420)
 dev.off()
 ```
@@ -335,7 +339,7 @@ dev.off()
 ### Mosaic Plot
 
 ```{r, fig.width = 6, fig.height = 6, fig.align = "center"}
-par(mfrow = c(1, 1), family = "HCR Dotum LVT")
+par(mfrow = c(1, 1), family = "KoPubWorldDotum Medium")
 mosaicplot(t(Child_Class), main = "어린이들의 객실 등급별 생존/사망",
            xlab = "객실 등급", ylab = "생존/사망", 
            col = rainbow(2))
@@ -365,7 +369,7 @@ Female_Class %>%
 ### Plots
 
 ```{r, fig.width = 12, fig.height = 6}
-par(mfrow = c(1, 2), family = "HCR Dotum LVT")
+par(mfrow = c(1, 2), family = "KoPubWorldDotum Medium")
 b5 <- Female_Class %>% 
   barplot(yaxt = "n", col = rainbow(2))
 axis(side = 2, 
@@ -400,7 +404,8 @@ text(x = b5_p %>% rep(times = 2),
        format(digits = 2, nsmall = 1) %>%
        paste0("%"))
 legend("topright", inset = 0.05, fill = rainbow(2), legend = c("사망", "생존"))
-title(main = "여성들의 객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5)
+title(main = "여성들의 객실 등급별 생존/사망", line = -1, outer = TRUE, cex.main = 1.5,
+      family = "KoPubWorldDotum Bold")
 dev.copy(png, "../pics/Titanic_barplot05.png", width = 840, height = 420)
 dev.off()
 ```
@@ -408,7 +413,7 @@ dev.off()
 ### Mosaic Plot
 
 ```{r, fig.width = 6, fig.height = 6, fig.align = "center"}
-par(mfrow = c(1, 1), family = "HCR Dotum LVT")
+par(mfrow = c(1, 1), family = "KoPubWorldDotum Medium")
 mosaicplot(t(Female_Class), 
            main = "여성들의 객실 등급별 생존/사망", xlab = "객실 등급", ylab = "생존/사망", 
            col = rainbow(2))

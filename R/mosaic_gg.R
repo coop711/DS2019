@@ -1,5 +1,5 @@
 mosaic_gg <-
-function(tbl, base_family = "", 
+function(tbl, base_family = "KoPubWorldDotum Medium", 
                       ggtitle = "", 
                       xlab = "", 
                       ylab = "", 
