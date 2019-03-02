@@ -1,5 +1,5 @@
 ---
-title: "Big Five Personality and Multiple Intelligence : 201701"
+title: "Big Five Personality and Multiple Intelligence : Template"
 author: "coop711"
 date: "`r Sys.Date()`"
 output: html_document
