@@ -23,7 +23,7 @@ load("./BFI_MI_1701.RData")
 # ls()
 str(BFI[-2])
 str(MI)
-str(class.roll)
+str(class_roll)
 options(width = 180)
 ```
 
@@ -109,7 +109,7 @@ kable(BFI.level.kr.2)
 전체 출석부로 통합하고, 실험에 참여하지 않은 사람들은 `<NA>`로 표시.
 
 ```{r, merge with class roll}
-BFI.full.kr <- join(class.roll, BFI.level.kr.2, by = "ID")
+BFI.full.kr <- join(class_roll, BFI.level.kr.2, by = "ID")
 kable(BFI.full.kr[, -2])
 ```
 
@@ -141,7 +141,7 @@ kable(MI.score.kr)
 
 ```{r, MI in order}
 (MI.na.id <- which(apply(MI.score.kr, 1, function(x)any(is.na(x)))))
-(MI.ok.id <- setdiff(1:nrow(class.roll), MI.na.id))
+(MI.ok.id <- setdiff(1:nrow(class_roll), MI.na.id))
 MI.score.kr.ok <- MI.score.kr[MI.ok.id, ]
 MI.order.kr <- apply(MI.score.kr.ok, 1, order, decreasing = TRUE)
 t(MI.order.kr)
@@ -161,7 +161,7 @@ kable(MI.sort.kr.2)
 출석부에 통합
 
 ```{r, merge with class_roll}
-MI.sort.full.kr <- join(class.roll, MI.sort.kr.2, by = "ID")
+MI.sort.full.kr <- join(class_roll, MI.sort.kr.2, by = "ID")
 kable(MI.sort.full.kr[, -2])
 ```
 
@@ -186,19 +186,19 @@ kable(BFI.MI.full.ID)
 BFI결석생
 
 ```{r, BFI absence, echo = FALSE, results = 'markup'}
-BFI.present <- which(class.roll$ID %in% BFI$ID[BFI.ok.id])
-BFI.absent <- (1:nrow(class.roll))[-BFI.present]
+BFI.present <- which(class_roll$ID %in% BFI$ID[BFI.ok.id])
+BFI.absent <- (1:nrow(class_roll))[-BFI.present]
 BFI.absent
-class.roll$ID[BFI.absent]
-class.roll$Name[BFI.absent]
+class_roll$ID[BFI.absent]
+class_roll$Name[BFI.absent]
 ```
 
 MI 결석생
 
 ```{r, MI absence, echo = FALSE, results = 'markup'}
-MI.present <- which(class.roll$ID %in% MI$ID[MI.ok.id])
-MI.absent <- (1:nrow(class.roll))[-MI.present]
+MI.present <- which(class_roll$ID %in% MI$ID[MI.ok.id])
+MI.absent <- (1:nrow(class_roll))[-MI.present]
 MI.absent
-class.roll$ID[MI.absent]
-class.roll$Name[MI.absent]
+class_roll$ID[MI.absent]
+class_roll$Name[MI.absent]
 ```

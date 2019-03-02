@@ -1,5 +1,5 @@
 ---
-title: "Big Five Personality and Multiple Intelligence : Data Science 201901"
+title: "Big Five Personality and Multiple Intelligence : 201702"
 author: "coop711"
 date: "`r Sys.Date()`"
 output: html_document
@@ -18,7 +18,7 @@ panderOptions("table.split.table", Inf)
 필수 자료 읽어들이기
 
 ```{r}
-load("./BFI_MI_1901.RData")
+load("./BFI_MI_1702.RData")
 ls()
 str(BFI)
 str(MI)
@@ -125,7 +125,7 @@ detach(BFI)
 A<-matrix(numeric(0), nrow=nrow(MI), ncol=8)
 for(j in 1:8) {A[,j]<-MI[,j+1]
 for(i in 1:6) {
-A[,j]<-A[,j]+MI[, j+i*8]
+A[,j]<-A[,j]+MI[, j+1+i*8]
 }}
 MI.score.kr<-A
 MI.names.kr<-c("음악", "신체운동", "논리수학", "공간", "언어", "인간친화", "자기성찰", "자연친화")
@@ -176,8 +176,8 @@ pander(BFI.MI.full[, -2])
 -->
 
 ```{r, ids only to show, echo = FALSE}
-BFI.MI.full.ID<-BFI.MI.full[,-2]
-pander(BFI.MI.full.ID)
+BFI.MI.full.ID <- BFI.MI.full[,-2]
+pander(BFI.MI.full.ID[order(BFI.MI.full.ID$ID), ])
 ```
 
 <!--결석생 확인
