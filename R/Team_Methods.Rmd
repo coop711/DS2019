@@ -15,8 +15,8 @@ library(knitr)
 ```{r, data}
 class_roll <- read.table("../data/class_roll_masked.txt", 
                          header = TRUE, 
-                         stringsAsFactors = FALSE, 
-                         encoding = "CP949")
+                         encoding = "UTF-8",
+                         stringsAsFactors = FALSE)
 str(class_roll)
 ```
 
@@ -25,9 +25,9 @@ str(class_roll)
 ```{r, team id, echo = TRUE}
 set.seed(4)
 N <- nrow(class_roll)
-group <- 1 + sample(1:N) %% 8
+group <- sample(1:N) %% 8
 class_roll$group <- factor(group, 
-                           levels = 1:8, 
+                           levels = 0:7, 
                            labels = paste("Team", 1:8))
 kable(class_roll)
 ```
@@ -53,7 +53,7 @@ kable(table("팀" = class_roll$group,
 ID_14 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2014, 
                        "14학번이후", "13학번이전"), 
                 levels = c("14학번이후", "13학번이전"))
-kable(table("팀" = class_roll$group,
+kable(table("팀" = class_roll$group, 
             "14학번 기준" = ID_14))
 ```
 
