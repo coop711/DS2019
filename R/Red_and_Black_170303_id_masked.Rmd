@@ -36,26 +36,27 @@ black_id <- which(class_roll$group == "Black")
 ### 학번
 
 ```{r, id}
+kable(table(class_roll$group, substr(class_roll$id, 1, 4)), align = "c")
 ID_16 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2016, 
                        "younger_16", "older_16"), 
                 levels = c("younger_16", "older_16"))
 kable(table("그룹" = class_roll$group, 
-            "16학번 기준" = ID_16))
+            "16학번 기준" = ID_16), align = "c")
 ID_15 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2015, 
                        "younger_15", "older_15"), 
                 levels = c("younger_15", "older_15"))
 kable(table("그룹" = class_roll$group,
-            "15학번 기준" = ID_15))
+            "15학번 기준" = ID_15), align = "c")
 ID_14 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2014, 
                        "younger_14", "older_14"), 
                 levels = c("younger_14", "older_14"))
 kable(table("그룹" = class_roll$group,
-            "14학번 기준" = ID_14))
+            "14학번 기준" = ID_14), align = "c")
 ID_13 <- factor(ifelse(substr(class_roll$id, 1, 4) >= 2013, 
                        "younger_13", "older_13"), 
                 levels = c("younger_13", "older_13"))
 kable(table("그룹" = class_roll$group,
-            "13학번 기준" = ID_13))
+            "13학번 기준" = ID_13), align = "c")
 ```
 
 <!--
@@ -73,7 +74,7 @@ kable(table("odd_even" = odd.even, "Group"= class_roll$group))
 email_list <- strsplit(class_roll$email, "@", fixed = TRUE)
 mail_com <- sapply(email_list, `[`, 2)
 kable(table("그룹" = class_roll$group,
-            "e-mail" = mail_com))
+            "e-mail" = mail_com), align = "c")
 ```
 
 ### 성씨 분포
@@ -82,7 +83,7 @@ kable(table("그룹" = class_roll$group,
 f_name <- substring(class_roll$name, 
                     first = 1, last = 1)
 kable(table("Group" = class_roll$group,
-            "Family Name" = f_name))
+            "Family Name" = f_name), align = "c")
 ```
 
 ### 많이 나오는 성씨
@@ -92,7 +93,7 @@ f_name_f <- factor(ifelse(f_name %in% c("김", "이", "박"),
                           f_name, "기타"), 
                    levels = c("김", "이", "박", "기타"))
 kable(table("Group" = class_roll$group, 
-            "Family Name" = f_name_f))
+            "Family Name" = f_name_f), align = "c")
 ```
 
 ### 전화번호의 분포
@@ -105,7 +106,7 @@ cell_numbers <- sapply(substr(class_roll$cell_no, 5, 8),
 cut_label <- paste(paste0(1:9, "000"), paste0(1:9, "999"), sep = "~")
 kable(t(table(cut(cell_numbers, 
                   labels = cut_label, 
-                  breaks = seq(1000, 10000, by = 1000)))))
+                  breaks = seq(1000, 10000, by = 1000)))), align = "c")
 hist(cell_numbers)
 ```
 
@@ -122,7 +123,7 @@ kable(table("그룹" = class_roll$group, "학과" = class_roll$dept))
 
 ```{r, colleges}
 # set.seed(1)
-kable(class_roll[sample(1:nrow(class_roll), size = 8), ])
+kable(class_roll[sample(1:nrow(class_roll), size = 8), ], align = "c")
 ```
 
 <!--
