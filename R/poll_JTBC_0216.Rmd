@@ -17,7 +17,9 @@ JTBC 정치부회의에서는 다음과 같은 도표의 민주당 지지자 중
 ## Data Setup
 
 ```{r, data}
+library(magrittr)
 candidates <- c("문재인", "안희정", "이재명", "안철수", "황교안")
+candidates %<>% factor(levels = candidates)
 week2 <- c(57, 20, 11, 2, 1)
 week3 <- c(61, 24, 7, 1, 1)
 rates_df <- data.frame(candidates, week2, week3, 
@@ -66,28 +68,36 @@ text(x = 8, y = 60,
 
 ### Data for `ggplot()`
 
-```{r, data reshaping}
+```{r, data reshaping, eval = FALSE}
 library(reshape2)
-(rates_df$candidates_f <- factor(candidates, 
-                                levels = candidates))
+# (rates_df$candidates_f <- factor(candidates, 
+#                                 levels = candidates))
 str(rates_df)
-(rates_df_melt <- melt(rates_df[, 2:4], 
-                      id.vars = "candidates_f", 
+(rates_df_melt <- melt(rates_df, 
+                      id.vars = "candidates", 
                       measure.vars = c("week2", "week3"), 
                       variable.name = "week", 
                       value.name = "rates"))
 str(rates_df_melt)
 ```
 
+```{r, dplyr}
+library(tidyverse)
+rates_tbl <- rates_df %>%
+  as_tibble %>%
+  gather(key = "week", value = "rates", - candidates) 
+```
+
+
 <P style = "page-break-before:always">
 
 ### `geom_bar()`
 
 ```{r, fig.width = 8, fig.height = 4}
-library(ggplot2)
+# library(ggplot2)
 source("theme_kr.R")
-g0 <- ggplot(data = rates_df_melt, 
-             mapping = aes(x = candidates_f, 
+g0 <- ggplot(data = rates_tbl, 
+             mapping = aes(x = candidates, 
                            y = rates, 
                            fill = week)) 
 (g1 <- g0 + 
@@ -99,7 +109,7 @@ g0 <- ggplot(data = rates_df_melt,
 
 ```{r, fig.height = 4, fig.width = 8}
 (g2 <- g1 +
-  geom_text(mapping = aes(x = candidates_f, 
+  geom_text(mapping = aes(x = candidates, 
                           y = rates + 2, 
                           label = rates,
                           colour = week), 
