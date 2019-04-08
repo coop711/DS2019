@@ -99,7 +99,7 @@ VADeaths %>%
 
 ```{r, gather}
 VADeaths %>%
-  as_tibble() %>%
+  as_tibble %>%
   mutate(Age = rownames(VADeaths)) %>%
   gather(key = Place_Gender, 
          value = Rates,
@@ -123,7 +123,7 @@ VADeaths %>%
 
 ```{r, mutate}
 VADeaths %>%
-  as_tibble() %>%
+  as_tibble %>%
   mutate(Age = rownames(VADeaths)) %>%
   gather(key = Place_Gender, 
          value = Rates,
