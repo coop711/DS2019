@@ -120,6 +120,9 @@ rect(xleft = mean(b1) - 2, ybottom = max(rates) - 6, xright = mean(b1) + 2,
 text(x = mean(b1), y = max(rates) - 3, labels = main_title, col = "white", cex = 1.5)
 #> Text for notes
 text(x = mean(b1) - 2, y = max(rates) - 8, labels = note_text, cex = 0.5, adj = 0)
+box(which = "outer", lwd = 3)
+dev.copy(png, "../pics/sbs170331.png", width = 640, height = 320)
+dev.off()
 ```
 <P style = "page-break-before:always">
 
@@ -298,4 +301,6 @@ g0 <- ggplot(data = rates_df,
              size = 2, 
              hjust = 0,
              family = "KoPubWorldDotum Medium"))
+ggsave("../pics/sejong_bureaus_commons_pie_ggplot.png", 
+       g9.2, width = 8, height = 4, dpi = 72)
 ```

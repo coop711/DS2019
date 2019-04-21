@@ -60,6 +60,9 @@ title(main = main_title,
 text(x = 8, y = 60, 
      main_text, 
      cex = 1.2)
+box(which = "figure", lwd = 3)
+dev.copy(png, "../pics/jtbc170216.png", width = 640, height = 320)
+dev.off()
 ```
 
 <P style = "page-break-before:always">
@@ -86,6 +89,7 @@ library(tidyverse)
 rates_tbl <- rates_df %>%
   as_tibble %>%
   gather(key = "week", value = "rates", - candidates) 
+str(rates_tbl)
 ```
 
 

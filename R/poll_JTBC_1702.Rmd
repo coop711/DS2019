@@ -46,9 +46,12 @@ b1 <- barplot(rates,
 text(x = b1, y = rates + c(rep(-3, 4), rep(1.5, 2)), 
      labels = rates, 
      cex = 1.2)
-main_title <- "대선주자 지지율(%)"
+main_title <- "차기 대선주자 지지율(%)"
 title(main = main_title, 
-      cex.main = 1.5)
+      cex.main = 2)
+box(which = "figure", lwd = 3)
+dev.copy(png, "../pics/jtbc1702.png", width = 640, height = 320)
+dev.off()
 ```
 
 <P style = "page-break-before:always">

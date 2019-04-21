@@ -73,6 +73,9 @@ title(main = main_title,
       sub = sub_title, 
       cex.main = 2)
 text(4, 250, main_text)
+box(which = "figure", lwd = 3)
+dev.copy(png, "../pics/jtbc170314.png", width = 640, height = 480)
+dev.off()
 ```
 
 <P style = "page-break-before:always">
