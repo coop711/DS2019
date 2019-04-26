@@ -15,12 +15,13 @@ knitr::opts_chunk$set(echo = TRUE, tidy = FALSE, highlight = FALSE)
 
 자료 입력
 
-<img src = "../pics/korea_labor_income_2010.png" height = "480" width = "480">
+<img src = "../pics/korea_labor_income_2010.png" height = "640" width = "640">
 
 ```{r, data, highlight = FALSE}
 income_kr <- "../data/labor_income_kor.txt" %>% 
   read.table(header = TRUE, row.names = 1)
-income_kr %>% str
+income_kr %>% 
+  str
 ```
 
 변수명을 조정하고, 다시 확인.
@@ -47,14 +48,16 @@ rownames(income_kr) %<>%
 `width`에 해당하는 각 소득구간의 폭을 계산
 
 ```{r}
-income_widths <- income_breaks %>% diff
+income_widths <- income_breaks %>% 
+  diff
 ```
 
 각 기둥의 면적이 해당 소득구간의 퍼센티지와 같게 해주려면 각 퍼센티지를 `width`로 나눠줘야 함. 다음 각 경우를 비교(`results = 'hide'`를 지우고 실행).
 
 ```{r, height, results = 'markup'}
 options(digits = 3)
-(height_earners <- income_kr[, 1] %>%`/`(income_widths))
+(height_earners <- income_kr[, 1] %>%
+    `/`(income_widths))
 ```
 
 <P style = "page-break-before:always">
