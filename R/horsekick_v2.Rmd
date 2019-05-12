@@ -14,6 +14,8 @@ options(digits = 7)
 library(tidyverse)
 library(pscl)
 library(magrittr)
+library(knitr)
+library(pander)
 data(prussian)
 str(prussian)
 head(prussian)
@@ -47,7 +49,7 @@ horsekick %$%
 ```{r fig.width = 5.5, fig.height = 5.5}
 options(digits = 3)
 #> 한글 폰트 설정
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 #> 백분율로 표시
 # horsekick$Perc <- prussian$y %>%
 #   table %>%
@@ -65,7 +67,10 @@ horsekick$Cum <- horsekick$Perc %>%
   cumsum
 #> 백분율과 누적백분율 비교
 horsekick %>%
-  `[`(c("Perc", "Cum"))
+#> `tibble`이 `format` 함수와 갖는 작은 문제로 인하여 `as.data.frame` 적용. 이 조치를 하지 않았을 떄 어떤 결과물이 나오는지 비교.
+  as.data.frame %>%
+  select(c("Perc", "Cum"))  %>%
+  format(digits = 1, nsmall = 1)
 #> `Deaths`를 숫자로 변환하여 산점도의 수평축으로 
 #> 누적백분율을 점으로 표시. `yaxt = "n"` 의 효과 확인
 horsekick %$%
@@ -106,7 +111,7 @@ points(x = Deaths[2:5], y = Cum[1:4],
 
 ```{r fig.width = 5.5, fig.height = 5.5}
 options(digits = 3)
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 plot(x = horsekick$Deaths, y = horsekick$Cum, 
      xlim = c(-0.5,4.5), ylim = c(50, 100), 
      xlab = "사망자 수", ylab = "누적 백분률(%)", 
@@ -150,28 +155,34 @@ h_xy
 격자선을 놓는 과정까지를 두 줄로 줄일 수 있다.
 
 ```{r fig.width = 5.5, fig.height = 5.5}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 source("horsekick_plot_v2.R", echo = TRUE)
 apply(h_xy, MARGIN = 1, 
       FUN = function(h) lines(x = h[1:2], y = h[3:4], lty = 3))
 l_xy <- function(h) lines(x = h[1:2], y = h[3:4], lty = 3)
 ```
 
-누적분포 윗 면적을 명확히 표시하기 위하여 빗금
+사망자 수의 기대값(평균)은 
+
+$0\times P(사망자수 = 0) + 1\times P(사망자수 = 1) + 2\times P(사망자수 = 2) + 3\times P(사망자수 = 3) + 4\times P(사망자수 = 4)$
+
+$= 0\times0.514 + 1\times(0.839-0.514) + 2\times(0.954-0.839) + 3\times(0.993-0.954) + 4\times(1-0.997)$
+
+을 계산한 것과 같다. 이는 누적도표 위에서 막대의 면적들을 합한 것과 같다.
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 library(RColorBrewer)
 h_pal <- brewer.pal(4, name = "Purples")
 source("horsekick_plot_v2.R", echo = FALSE)
 apply(h_xy, MARGIN = 1, FUN = l_xy)
-polygon(c(0, 1, 1, 0), c(rep(horsekick$Cum[1], 2), rep(horsekick$Cum[5], 2)), 
+polygon(c(0, 1, 1, 0), c(rep(horsekick$Cum[1], 2), rep(horsekick$Cum[2], 2)), 
         col = h_pal[1])
-polygon(c(1, 2, 2, 1), c(rep(horsekick$Cum[2], 2), rep(horsekick$Cum[5], 2)), 
+polygon(c(0, 2, 2, 0), c(rep(horsekick$Cum[2], 2), rep(horsekick$Cum[3], 2)), 
         col = h_pal[2])
-polygon(c(2, 3, 3, 2), c(rep(horsekick$Cum[3], 2), rep(horsekick$Cum[5], 2)), 
+polygon(c(0, 3, 3, 0), c(rep(horsekick$Cum[3], 2), rep(horsekick$Cum[4], 2)), 
         col = h_pal[3])
-polygon(c(3, 4, 4, 3), c(rep(horsekick$Cum[4], 2), rep(horsekick$Cum[5], 2)), 
+polygon(c(0, 4, 4, 0), c(rep(horsekick$Cum[4], 2), rep(horsekick$Cum[5], 2)), 
         col = h_pal[4])
 points(x = horsekick$Deaths, y = horsekick$Cum,
        pch = 21, bg = "black", col = "black")
@@ -182,21 +193,20 @@ points(x = horsekick$Deaths[2:5], y = horsekick$Cum[1:4],
 `polygon()`들을 한 줄로 정리하기 위하여 좌표들을 모으고, 
 
 ```{r}
-poly_x <- matrix(c(0:3, rep(1:4, 2), 0:3), ncol = 4, byrow = T)
-poly_x
-poly_y <- rbind(sapply(horsekick$Cum[1:4], rep, 2), 
-                matrix(rep(horsekick$Cum[5], 8), nrow = 2))
-poly_y
+poly_x <- matrix(c(rep(0, 4), rep(1:4, 2), rep(0, 4)), 
+                   ncol = 4, byrow = TRUE)
+poly_y <- rbind(sapply(horsekick$Cum[1:4], rep, times = 2), 
+                  sapply(horsekick$Cum[2:5], rep, times = 2))
 poly_xy <- rbind(poly_x, poly_y)
 poly_xy
 lapply(data.frame(poly_xy), 
-       FUN = function(v) cbind(v[1:4], v[5:8]))
+              FUN = function(v) cbind(v[1:4], v[5:8]))
 ```
 
-`sapply()`, `lapply()`, `mapply()`를 적재적소에 활용하여 분량을 줄여보자.
+`sapply()`, `lapply()`, `mapply()`를 적재적소에 활용하여 분량을 줄여보자. 빗금친 부분들의 합이 평균임을 알 수 있다.
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 source("horsekick_plot_v2.R")
 # apply(h_xy, MARGIN = 1, FUN = l_xy)
 mapply(polygon, 
@@ -209,19 +219,30 @@ points(x = horsekick$Deaths[2:5], y = horsekick$Cum[1:4],
        pch = 21, bg = "white", col = "black")
 ```
 
-누적분포 윗 면적이 곧 평균임을 나타내기 위해 막대를 다른 방향으로 집적. 우선 좌표들을 다시 정리하자.
+사망자수의 기대값 계산을 다시 정리하여 보면, 
+
+$1\times0.325 + 2\times0.114 + 3\times0.039 + 4\times0.007$
+
+$= 1\times(0.325 + 0.114 + 0.039 + 0.007) + 1\times(0.114 + 0.039 + 0.007) + 1\times(0.039 + 0.007) + 1\times0.007$
+
+$= P(사망자수\ge1) + P(사망자수\ge2) + P(사망자수\ge3) + P(사망자수\ge4)$, 
+
+즉 누적분포 윗 면적이 된다. 이는 다음 그림에서 막대를 다른 방향으로 집적하였을 때 면적의 합과 같다.
 
 ```{r}
-poly_x_2 <- matrix(c(rep(0, 4), rep(1:4, 2), rep(0, 4)), 
-                   ncol = 4, byrow = TRUE)
-poly_y_2 <- rbind(sapply(horsekick$Cum[1:4], rep, times = 2), 
-                  sapply(horsekick$Cum[2:5], rep, times = 2))
+poly_x_2 <- matrix(c(0:3, rep(1:4, 2), 0:3), ncol = 4, byrow = T)
+poly_x_2
+poly_y_2 <- rbind(sapply(horsekick$Cum[1:4], rep, 2), 
+                matrix(rep(horsekick$Cum[5], 8), nrow = 2))
+poly_y_2
 poly_xy_2 <- rbind(poly_x_2, poly_y_2)
 poly_xy_2
+lapply(data.frame(poly_xy_2), 
+       FUN = function(v) cbind(v[1:4], v[5:8]))
 ```
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 source("horsekick_plot_v2.R")
 apply(h_xy, MARGIN = 1, FUN = l_xy)
 mapply(polygon, 
@@ -237,16 +258,16 @@ points(x = horsekick$Deaths[2:5], y = horsekick$Cum[1:4],
 
 ```{r fig.width = 5.5, fig.height = 5.5, message = FALSE}
 options(digits = 3)
-par(family = "")
+par(family = "KoPubWorldDotum Medium")
 source("horsekick_plot_v2.R", echo = FALSE)
 apply(h_xy, MARGIN = 1, FUN = l_xy)
-polygon(c(0, 1, 1, 0), c(rep(horsekick$Cum[1], 2), rep(horsekick$Cum[2], 2)), 
+polygon(c(0, 1, 1, 0), c(rep(horsekick$Cum[1], 2), rep(horsekick$Cum[5], 2)), 
         col = h_pal[1])
-polygon(c(0, 2, 2, 0), c(rep(horsekick$Cum[2], 2), rep(horsekick$Cum[3], 2)), 
+polygon(c(1, 2, 2, 1), c(rep(horsekick$Cum[2], 2), rep(horsekick$Cum[5], 2)), 
         col = h_pal[2])
-polygon(c(0, 3, 3, 0), c(rep(horsekick$Cum[3], 2), rep(horsekick$Cum[4], 2)), 
+polygon(c(2, 3, 3, 2), c(rep(horsekick$Cum[3], 2), rep(horsekick$Cum[5], 2)), 
         col = h_pal[3])
-polygon(c(0, 4, 4, 0), c(rep(horsekick$Cum[4], 2), rep(horsekick$Cum[5], 2)), 
+polygon(c(3, 4, 4, 3), c(rep(horsekick$Cum[4], 2), rep(horsekick$Cum[5], 2)), 
         col = h_pal[4])
 points(x = horsekick$Deaths, y = horsekick$Cum,
        pch = 21, bg = "black", col = "black")
