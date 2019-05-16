@@ -21,7 +21,8 @@ candidates <- c("문재인", "안희정", "황교안", "안철수", "이재명",
 rates <- c(33, 22, 9, 9, 5, 2)
 party <- c("더불어민주당", "자유한국당", "국민의당", "바른정당")
 colour_party <- c("skyblue", "lightgrey", "darkgreen", "darkblue")
-candidates_party <-  c("더불어민주당", "더불어민주당", "자유한국당", "국민의당", "더불어민주당", "바른정당")
+candidates_party <-  c("더불어민주당", "더불어민주당", "자유한국당", 
+                       "국민의당", "더불어민주당", "바른정당")
 match(candidates_party, party)
 candidates_colour <- colour_party[match(candidates_party, party)]
 ```
@@ -41,11 +42,13 @@ par(family = "KoPubWorldDotum Medium")
 b1 <- barplot(rates, 
               axes = FALSE, 
               col = candidates_colour, 
-              names.arg = candidates,
-              cex.names = 1.2)
+              names.arg = NULL,
+              cex.names = 1.5)
+mtext(side = 1, at = b1, line = 0.5, text = candidates, cex = 1.5)
 text(x = b1, y = rates + c(rep(-3, 4), rep(1.5, 2)), 
      labels = rates, 
-     cex = 1.2)
+     col = c("black", "black", "black", "white", "black", "black"),
+     cex = 1.5)
 main_title <- "차기 대선주자 지지율(%)"
 title(main = main_title, 
       cex.main = 2)
@@ -60,15 +63,14 @@ dev.off()
 
 ```{r, ggplot, fig.width = 8, fig.height = 4}
 library(ggplot2)
-candidates_f <- factor(candidates, 
-                       levels = candidates)
-rates_df <- data.frame(후보 = candidates_f, 
-                       정당 = candidates_party, 
-                       색깔 = candidates_colour,
-                       지지도 = rates)
+candidates <- factor(candidates, levels = candidates)
+rates_df <- data.frame(candidates, 
+                       candidates_party, 
+                       candidates_colour,
+                       rates)
 g0 <- ggplot(data = rates_df, 
-             mapping = aes(x = 후보, 
-                           y = 지지도))
+             mapping = aes(x = candidates, 
+                           y = rates))
 (g1 <- g0 +
   geom_bar(stat = "identity"))
 ```
@@ -76,45 +78,56 @@ g0 <- ggplot(data = rates_df,
 <P style = "page-break-before:always">
 
 ```{r, fig.height = 4, fig.width = 8}
-(g1 <- g0 +
+(g2 <- g0 +
   geom_bar(stat = "identity", 
            fill = candidates_colour))
-(g2 <- g1 +
-  theme_bw(base_family = "KoPubWorldDotum Medium"))
 (g3 <- g2 +
-  geom_text(mapping = aes(x = 후보, 
-                          y = 지지도 + c(rep(-3, 4), rep(2, 2)), 
-                          label = 지지도), 
-                          size = 6))
+  theme_bw(base_family = "KoPubWorldDotum Medium"))
 (g4 <- g3 +
+  geom_text(mapping = aes(x = candidates, 
+                          y = rates + c(rep(-3, 4), rep(2, 2)), 
+                          label = rates), 
+            colour = c(rep("black", 3), "white", rep("black", 2)),
+            size = 6))
+(g5 <- g4 +
   labs(title = main_title))
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, fig.height = 4, fig.width = 8}
-(g5 <- g4 +
-  theme(plot.title = element_text(hjust = 0.5)))
 (g6 <- g5 +
+  theme(plot.title = element_text(family = "KoPubWorldDotum Bold", 
+                                  size = 15, 
+                                  hjust = 0.5)))
+(g7 <- g6 +
   scale_y_continuous(breaks = rates, labels = rates))
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, fig.height = 4, fig.width = 8}
-(g7 <- g6 +
+(g8 <- g7 +
   theme(panel.border = element_blank(),
         axis.title.x = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.x = element_text(vjust = 0),
+        axis.text.x = element_blank(),
         axis.ticks = element_blank(), 
         axis.text.y = element_blank()))
 ```
 
+```{r, fig.height = 4, fig.width = 8}
+(g9 <- g8 +
+    geom_text(mapping = aes(x = candidates,
+                            y = -1,
+                            label = candidates),
+              size = 5,
+              family = "KoPubWorldDotum Medium"))
+```
 <P style = "page-break-before:always">
 
 ```{r, fig.height = 4, fig.width = 8}
-(g8 <- g7 +
+(g10 <- g9 +
     ggtitle("") +
     annotate("text", 
              x = mean(b1), 
@@ -123,4 +136,10 @@ g0 <- ggplot(data = rates_df,
              vjust = 1.5, 
              size = 6,
              family = "KoPubWorldDotum Bold"))
+```
+
+```{r, fig.height = 16, fig.width = 10}
+library(gridExtra)
+g_all <- grid.arrange(g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, nrow = 5)
+ggsave(g_all, file = "../pics/poll_JTBC_1702_plots.png", width = 10, height = 16)
 ```

@@ -335,6 +335,7 @@ ggplot(data = Gini_b_a_order_tbl,
         plot.title = element_text(size = 15, hjust = 0.5),
         plot.subtitle = element_text(size = 10, hjust = 0.5)) +
   coord_flip()
+ggsave("../pics/Gini_OECD.png", width = 7, height = 9)
 ```
 
 * 한글 제목 등의 세부 작업은 차후에
