@@ -32,32 +32,18 @@ JTBC 뉴스룸에서 김영란법 국회 통과에 관련하여 여론조사한 
 poll <- c(64.0, 7.3, 28.7)
 names(poll) <- c("잘했다", "잘못했다", "모르겠다")
 #> 도표 안 레이블의 좌표 계산. 각도를 어떻게 계산하는지 유의할 것
-text_x <- 0.75 * cos(c(0, 
-                       ((25 + 28.7) + (25 + 28.7 + 7.3)) * pi / 100, 
-                       (25 + (25 + 28.7)) * pi / 100))
-text_y <- 0.75 * sin(c(0, 
-                       ((25 + 28.7) + (25 + 28.7 + 7.3)) * pi / 100, 
-                       (25 + (25 + 28.7)) * pi / 100))
-kable(t(as.matrix(poll)), caption = "김영란법 국회 통과")
-```
-
-```{r}
-library(ggplot2)
 pos <- cumsum(poll) - poll / 2
-poll_tbl <- data.frame(key = names(poll), value = poll, row.names = NULL)
-ggplot(data = poll_tbl, mapping = aes(x = 2, y = value, fill = key)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(y = pos, label = poll), size = 5) +
-  xlim(0.5, 2.5) +
-  labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("gray", "red", "blue")) +
-#  scale_y_continuous(breaks = NULL) +
-  guides(fill = guide_legend(title = "", reverse = TRUE)) +
-  theme_void() +
-  theme(axis.ticks = element_blank(),
-        axis.text = element_blank(),
-        legend.text = element_text(family = "HCR Dotum LVT")) +
-  coord_polar(theta = "y")
+x_text <- 0.75 * cos(pi / 2 - (2 * pi) * pos / 100)
+y_text <- 0.75 * sin(pi / 2 - (2 * pi) * pos / 100)
+# x_text <- 0.75 * cos(c(0, 
+#                        ((25 + 28.7) + (25 + 28.7 + 7.3)) * pi / 100, 
+#                        (25 + (25 + 28.7)) * pi / 100))
+# y_text <- 0.75 * sin(c(0, 
+#                        ((25 + 28.7) + (25 + 28.7 + 7.3)) * pi / 100, 
+#                        (25 + (25 + 28.7)) * pi / 100))
+x_text[1] <- 0.75
+y_text[1] <- 0
+kable(t(as.matrix(poll)), caption = "김영란법 국회 통과")
 ```
 
 <P style ="page-break-before: always">
@@ -82,7 +68,7 @@ pie(1,
 text(x = 0, y = 0, 
      labels = "%", 
      cex = 1.5)
-text(x = text_x, y = text_y, 
+text(x = x_text, y = y_text, 
      labels = format(poll, nsmall = 1), 
      col = "white", 
      cex = 1.5)
@@ -90,4 +76,27 @@ title(main = "김영란법\n국회 통과", cex.main = 2)
 box(which = "figure", lwd = 3)
 dev.copy(png, "../pics/jtbc150303.png", width = 480, height = 480)
 dev.off()
+```
+
+## `coord_polar()`
+
+```{r}
+library(ggplot2)
+pos <- cumsum(poll) - poll / 2
+pos2 <- pos
+pos2[1] <- 25
+poll_tbl <- data.frame(key = names(poll), value = poll, row.names = NULL)
+ggplot(data = poll_tbl, mapping = aes(x = 2, y = value, fill = key)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(y = pos2, label = poll), size = 8, colour = "white") +
+  xlim(0.5, 2.5) +
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c("gray", "red", "blue")) +
+#  scale_y_continuous(breaks = NULL) +
+  guides(fill = guide_legend(title = "", reverse = TRUE)) +
+  theme_void() +
+  theme(axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        legend.text = element_text(family = "HCR Dotum LVT")) +
+  coord_polar(theta = "y")
 ```
