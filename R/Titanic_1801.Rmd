@@ -16,7 +16,6 @@ output: html_document
 library(magrittr)
 library(knitr)
 library(pander)
-library(printr)
 library(ggplot2)
 data(Titanic)
 Titanic %>% str

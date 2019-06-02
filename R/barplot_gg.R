@@ -4,40 +4,41 @@ function(x,
                        base_family = "KoPubWorldDotum Medium", 
                        ggtitle = "", 
                        xlab = "", 
-                       ylab = "", 
-                       fill_name = ""){
+                       ylab = ""){ 
+#                        fill_name = ""){
   switch(position,
          stack = barplot_gg_stack(x, 
                                   base_family = base_family, 
                                   ggtitle = ggtitle, 
                                   xlab = xlab, 
-                                  ylab = ylab, 
-                                  fill_name = fill_name),
+                                  ylab = ylab), 
+#                                  fill_name = fill_name),
          dodge = barplot_gg_dodge(x, 
                                   base_family = base_family, 
                                   ggtitle = ggtitle, 
                                   xlab = xlab, 
-                                  ylab = ylab, 
-                                  fill_name = fill_name),
+                                  ylab = ylab), 
+#                                   fill_name = fill_name),
          fill = barplot_gg_fill(x, 
                                 base_family = base_family, 
                                 ggtitle = ggtitle, 
                                 xlab = xlab, 
-                                ylab = ylab, 
-                                fill_name = fill_name))
+                                ylab = ylab)) 
+#                                 fill_name = fill_name))
 }
 barplot_gg_stack <-
 function(df, 
                              base_family = "KoPubWorldDotum Medium", 
                              ggtitle = "", 
                              xlab = "", 
-                             ylab = "", 
-                             fill_name = ""){
+                             ylab = ""){ 
+#                              fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
 y <- unlist(tapply(df[, 3], 
                    x, 
-                   function(x){x / 2 + c(0, cumsum(head(x, -1)))}))
+                   function(x){cumsum(x) - x / 2}))
+#                    function(x){x / 2 + c(0, cumsum(head(x, -1)))}))
 y_breaks <- unlist(tapply(df[, 3], 
                          x, 
                          cumsum))
@@ -60,11 +61,11 @@ b2 <- b1 +
   scale_x_discrete(name = xlab) +
   scale_y_continuous(name = ylab, 
                      breaks = y_breaks,
-                     labels = y_label) +
-  scale_fill_manual(name = fill_name, 
-                    values = rainbow(n_fill)[n_fill:1], 
-                    labels = df[, 1], 
-                    guide = guide_legend())
+                     labels = y_label)
+#   scale_fill_manual(name = fill_name, 
+#                     values = rainbow(n_fill)[n_fill:1], 
+#                     labels = df[, 1], 
+#                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = y), 
             label = format(ifelse(df[, 3] == 0, "", df[, 3]), 
@@ -78,8 +79,8 @@ function(df,
                              base_family = "KoPubWorldDotum Medium", 
                              ggtitle = "", 
                              xlab = "", 
-                             ylab = "", 
-                             fill_name = ""){
+                             ylab = ""){ 
+#                              fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
 y_dodge <- df[, 3]
@@ -95,10 +96,10 @@ b2 <- b1 +
   scale_x_discrete(name = xlab) +
   scale_y_continuous(name = ylab, 
                      breaks = y_dodge,
-                     labels = format(y_dodge, big.mark = ",")) +
-  scale_fill_manual(name = fill_name, 
-                    values = rainbow(n_fill)[n_fill:1], 
-                    labels = df[, 1])
+                     labels = format(y_dodge, big.mark = ","))
+#   scale_fill_manual(name = fill_name, 
+#                     values = rainbow(n_fill)[n_fill:1], 
+#                     labels = df[, 1])
 #  N <- nrow(df)
 #  index <- as.vector(matrix(1:N, nrow = 2)[2:1, ])
 y_label <- unlist(tapply(df[, 3], 
@@ -117,8 +118,8 @@ function(df,
                             base_family = "KoPubWorldDotum Medium", 
                             ggtitle = "", 
                             xlab = "", 
-                            ylab = "", 
-                            fill_name = ""){
+                            ylab = ""){ 
+#                             fill_name = ""){
 n_fill <- length(levels(df[, 1]))
 x <- df[, 2]
 y_fill <- unlist(tapply(df[, 3], 
@@ -126,7 +127,8 @@ y_fill <- unlist(tapply(df[, 3],
                    function(x){cumsum(x) / sum(x)}))
 p_fill <- unlist(tapply(df[, 3], 
                         x, 
-                        function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
+                        function(x){(cumsum(x) - x / 2) / sum(x)}))
+#                        function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
 b1 <- ggplot(df, 
              aes(x = x, 
                  y = df[, 3], 
@@ -141,11 +143,11 @@ b2 <- b1 +
                      breaks = y_fill,
                      labels = format(y_fill * 100,
                                      digits = 2,
-                                     nsmall = 1)) +
-  scale_fill_manual(name = fill_name, 
-                    values = rainbow(n_fill)[n_fill:1], 
-                    labels = df[, 1], 
-                    guide = guide_legend())
+                                     nsmall = 1))
+#   scale_fill_manual(name = fill_name, 
+#                     values = rainbow(n_fill)[n_fill:1], 
+#                     labels = df[, 1], 
+#                     guide = guide_legend())
 b3 <- b2 +
   geom_text(aes(y = p_fill), 
             label = format(ifelse(df[, 3] == 0, "", df[, 3]), 
