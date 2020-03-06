@@ -2,8 +2,8 @@ mosaic_gg <-
 function(tbl, base_family = "KoPubWorldDotum Medium", 
                       ggtitle = "", 
                       xlab = "", 
-                      ylab = ""){
-#                      fill_name = ""){
+                      ylab = "", 
+                      fill_name = ""){
 tbl_df <- tbl %>%
   as.data.frame
 N <- length(levels(tbl_df[, 1]))
@@ -21,12 +21,11 @@ tbl_p_df$height <- tbl %>%
   `[`(, 3)
 tbl_p_df$label_height <- unlist(tapply(tbl_p_df$height, 
                                        tbl_p_df[, 2], 
-                                       function(x) cumsum(x) - x / 2))
+                                       function(x) x / 2 + c(0, cumsum(head(x, -1)))))
 tbl_p_df$y_breaks <- unlist(tapply(tbl_p_df$height, 
                                    tbl_p_df[, 2], 
                                    cumsum))
-x_center <- cumsum(tbl_p_m) - tbl_p_m / 2
-# x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
+x_center <- tbl_p_m / 2 + c(0, cumsum(head(tbl_p_m, -1)))
 # x_center <- (cumsum(tbl_p_m) + c(0, head(cumsum(tbl_p_m), -1)))/2
 tbl_p_df$center <- x_center[match(tbl_p_df[, 2], names(x_center))]
 m1 <- ggplot(tbl_p_df, 
@@ -67,11 +66,11 @@ m5 <- m4 +
   scale_y_continuous(name = ylab,
                      breaks = y_breaks,
                      label = y_label) + 
-#   scale_fill_manual(name = fill_name, 
-#                     values = rainbow(N)[N:1], 
-#                     labels = tbl_df[, 1], 
-#                     guide = guide_legend()) +
+  scale_fill_manual(name = fill_name, 
+                    values = rainbow(N)[N:1], 
+                    labels = tbl_df[, 1], 
+                    guide = guide_legend()) +
   ggtitle(ggtitle) +
-  theme(plot.margin = unit(c(1, 2, 4, 1), "lines"))
+  theme(plot.margin = unit(c(1, 2, 1, 1), "lines"))
 return(m5)
 }

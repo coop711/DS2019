@@ -53,38 +53,66 @@ vote_total %>%
 ### 원형그래프
 
 ```{r, message = FALSE}
-source("theme_kr.R")
+# source("theme_kr.R")
 # str(theme_kr)
 # str(vote_total)
-vote_total %>% str
+vote_total %>% 
+  str
 # vote_df <- as.data.frame(vote_total)
-vote_df <- vote_total %>% as.data.frame
+vote_df <- vote_total %>% 
+  as.data.frame
 # n_vote <- length(levels(vote_df[, 1]))
-n_vote <- vote_df %>% `[`(, 1) %>% levels %>% length
+n_vote <- vote_df %>% 
+  `[`(, 1) %>% 
+  levels %>% 
+  length
 # y_coord <- vote_df$Freq/2 + c(0, cumsum(head(vote_df$Freq, -1)))
-y_coord <- vote_df %>% `[`(, "Freq") %>% `/`(2) %>% `+`(., vote_df %>% `[`(, "Freq") %>% head(n = -1) %>% c(0, .))
+pos <- . %>% {
+  `-`(cumsum(.), `/`(., 2))
+  }
+# y_coord <- cumsum(vote_df$Freq) vote_df$Freq / 2
+y_coord <- vote_df$Freq %>%
+  pos 
+# y_coord <- vote_df %>% 
+#   `[`(, "Freq") %>% 
+#   `/`(2) %>% 
+#   `+`(., vote_df %>% 
+#         `[`(, "Freq") %>% 
+#         head(n = -1) %>% 
+#         c(0, .))
 # pie_label <- paste(levels(vote_df$vote), 
 #                    format(vote_df$Freq, big.mark = ","), sep = "\n") 
-pie_label <- vote_df %>% .$Freq %>% levels %>% 
-  paste(., vote_df %>% .$Freq %>% format(big.mark = ","), sep = "\n") 
+pie_label <- vote_df %>% 
+  .$Freq %>% 
+  levels %>% 
+  paste(., vote_df %>% 
+          .$Freq %>% 
+          format(big.mark = ","), sep = "\n") 
 pie_label
 # kable(vote_df, align = "r")
-vote_df %>% kable(align = "r")
+vote_df %>% 
+  kable(align = "r")
 # str(vote_df)
-vote_df %>% str
+vote_df %>% 
+  str
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
 # p1 <- ggplot(data = vote_df, mapping = aes(x = "", y = Freq, fill = vote))
-p1 <- ggplot(data = vote_df, mapping = aes(x = "", y = vote_df[, 2], fill = vote_df[, 1])) 
+p1 <- ggplot(data = vote_df, 
+             mapping = aes(x = "", 
+                           y = vote_df[, 2], 
+                           fill = vote_df[, 1])) 
 p2 <- p1 + 
   geom_bar(width = 1, stat = "identity", 
            position = position_stack(reverse = TRUE))
 p2
 p2_2 <- p1 + 
-  geom_bar(width = 1, stat = "identity", position = "dodge")
+  geom_bar(width = 1, 
+           stat = "identity", 
+           position = "dodge")
 p2_2
 ```
 
@@ -92,13 +120,15 @@ p2_2
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
 p3_2 <- p2_2 + 
-  theme_bw() + 
-  theme_kr
+  theme_bw(base_family = "KoPubWorldDotum Medium") 
+#  theme_kr
 p3_2
 p4_2 <- p3_2 + 
   scale_x_discrete(name = "찬반") +
   scale_y_continuous(name = "집계", breaks = vote_df[, 2], 
-                     labels = format(vote_df[, 2], big.mark = ","))
+                     labels = format(vote_df[, 2], big.mark = ",")) +
+  theme(axis.title.x = element_text(family = "KoPubWorldDotum Medium"),
+        axis.title.y = element_text(family = "KoPubWorldDotum Medium"))
 p4_2
 ```
 
@@ -108,12 +138,14 @@ p4_2
 p5_2 <- p4_2 +
   scale_fill_manual(name = "찬반", 
                     values = rainbow(n_vote)[n_vote:1], 
-                    labels = vote_df$vote)
+                    labels = vote_df$vote) +
+  theme(legend.title = element_text(family = "KoPubWorldDotum Bold"),
+        legend.text = element_text(family = "KoPubWorldDotum Light"))
 p5_2
 p6_2 <- p5_2 +
   geom_text(aes(y = vote_df[, 2] / 2), 
             label = format(rev(vote_df[, 2]), big.mark = ","), 
-#            family = "KoPubWorldDotum Medium", 
+            family = "KoPubWorldDotum Medium", 
             position = position_dodge(width = 1))
 p6_2
 ```
@@ -137,7 +169,7 @@ p8_2
 <P style = "page-break-before:always">
 
 ```{r, message = FALSE, fig.width = 3.2, fig.height = 3.2}
-p3 <- p2 + theme_bw()
+p3 <- p2 + theme_bw(base_family = "KoPubWorldDotum Medium")
 # + theme_kr
 p3 
 p4 <- p3 + 
@@ -174,7 +206,7 @@ p8 <- p5 +
   guides(fill = "none") +
   geom_text(aes(y = y_coord),
             label = pie_label,
-            family = "KoPubWorldDotum Medium", 
+#            family = "KoPubWorldDotum Medium", 
             position = position_identity())
 p8
 ```
@@ -238,7 +270,8 @@ ggsave("../pics/sejong_total_pie_ggplot.png", pie_total_7, dpi = 72)
 ```{r, pie_gg}
 pie_gg <- function(df, ggtitle = "", font_family = "KoPubWorldDotum Medium"){
   n <- length(names(df))
-  y_coord <- df[, 2] / 2 + c(0, cumsum(head(df[, 2], -1)))
+#   y_coord <- df[, 2] / 2 + c(0, cumsum(head(df[, 2], -1)))
+  y_coord <- cumsum(df[, 2]) - df[, 2] / 2
   pie_label <- paste(levels(df[, 1]), format(df[, 2], big.mark = ","), 
                      sep = "\n") 
   p1 <- ggplot(df, aes(x = "", 
@@ -473,8 +506,9 @@ n_fill <- length(levels(vote_seoul_df[, 1]))
 x_stack <- vote_seoul_df[, 2]
 y_stack <- unlist(tapply(vote_seoul_df[, 3], 
                          vote_seoul_df[, 2], 
-                         function(x){x / 2 + 
-                             c(0, cumsum(head(x, -1)))}))
+                         function(x){
+                           cumsum(x) - x / 2
+                           }))
 y_breaks <- unlist(tapply(vote_seoul_df[, 3], 
                          vote_seoul_df[, 2], 
                          cumsum))
@@ -570,7 +604,8 @@ y_fill <- unlist(tapply(vote_seoul_df[, 3],
                         function(x){cumsum(x) / sum(x)}))
 p_fill <- unlist(tapply(vote_seoul_df[, 3], 
                         x_stack, 
-                        function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
+                        function(x){(cumsum(x) - x / 2) / sum(x)}))
+#                         function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
 b1_seoul_fill <- ggplot(vote_seoul_df, 
                         aes(x = x_stack, 
                             y = vote_seoul_df[, 3], 
@@ -728,7 +763,8 @@ y_fill <- unlist(tapply(df[, 3],
                    function(x){cumsum(x) / sum(x)}))
 p_fill <- unlist(tapply(df[, 3], 
                         x, 
-                        function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
+                        function(x){(cumsum(x) - x / 2) / sum(x)}))
+#                         function(x){(x / 2 + c(0, cumsum(head(x, -1))))/sum(x)}))
 b1 <- ggplot(df, 
              aes(x = x, 
                  y = df[, 3], 
